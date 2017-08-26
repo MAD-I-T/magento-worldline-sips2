@@ -1,0 +1,20 @@
+{
+	"name": "cymit/atos",
+	"license":
+        "OSL-3.0"
+    ,
+	"type": "magento2-module",
+	"description": "Atos sherlock LCL payment gateway",
+	"version": "1.0.0",
+	"require": {
+		"php": "~5.6.5|7.0.2|7.0.4|~7.0.6"
+	},
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+        "psr-4": {
+	        "Cymit\\Atos\\": ""
+        }
+	}
+}

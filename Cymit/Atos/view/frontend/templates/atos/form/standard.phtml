@@ -1,0 +1,15 @@
+<?php
+?>
+<?php $_code = $this->getMethodCode(); ?>
+<ul class="form-list">
+    <li>
+        <div class="atos-logo">
+            <?php foreach ($this->getCreditCardsAccepted() as $card): ?>
+                <img src="<?php echo Mage::getBaseUrl('media') . 'atos/logo/' . $card . '.gif' ?>" alt="<?php echo $card ?>" />
+            <?php endforeach; ?>
+        </div>
+    </li>
+</ul>
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none">
+    <li><?php echo $this->__('You will be redirected to the payment server after the finalization of your order.') ?></li>
+</ul>

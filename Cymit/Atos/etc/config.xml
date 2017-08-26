@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <!--cymit_atos>
+            <config_standard>
+                <check_ip_address>0</check_ip_address>
+            </config_standard>
+        </cymit_atos-->
+        <payment>
+            <atos_standard>
+                <active>1</active>
+                <model>Cymit\Atos\Model\Method\Standard</model>
+                <title>atos_standard</title>
+                <allowspecific>0</allowspecific>
+            </atos_standard>
+        </payment>
+    </default>
+</config>
