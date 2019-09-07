@@ -40,9 +40,20 @@ class Ipn
     protected $responseInterface;
 
     /**
+     * @var Order\Email\Sender\OrderSender
+     */
+    protected $orderSender;
+
+    /**
      * @var \Magento\Sales\Model\Order $orderInterface
      */
     protected $orderInterface;
+
+
+    /**
+     * @var Order\Email\Sender\InvoiceSender
+     */
+    protected $invoiceSender;
 
     /**
      * Ipn constructor.
@@ -68,7 +79,9 @@ class Ipn
         \Magento\Framework\App\ResponseInterface $responseInterface,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Sales\Model\Order $orderInterface,
-        \Magento\Framework\DB\Transaction $transactionFactory
+        \Magento\Framework\DB\Transaction $transactionFactory,
+        \Magento\Sales\Model\Order\Email\Sender\OrderSender  $orderSender,
+        \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender
     ) {
         $this->moduleDirReader = $moduleDirReader;
         $this->filesApi = $filesApi;
@@ -82,6 +95,8 @@ class Ipn
         $this->orderInterface = $orderInterface;
         $this->transactionFactory = $transactionFactory;
         $this->invoiceService = $invoiceService;
+        $this->orderSender = $orderSender;
+        $this->invoiceSender = $invoiceSender;
     }
 
 
@@ -240,19 +255,17 @@ class Ipn
                 // Send order confirmation email
                 if (!$this->_order->getEmailSent() && $this->_order->getCanSendNewEmailFlag()) {
                     try {
-                        if (method_exists($this->_order, 'queueNewOrderEmail')) {
-                            $this->_order->queueNewOrderEmail();
-                        } else {
-                            $this->_order->sendNewOrderEmail();
-                        }
+                        $this->orderSender->send($this->_order);
                     } catch (\Exception $e) {
                         $this->logger->critical($e);
                     }
                 }
+
                 // Send invoice email
                 if ($this->_invoiceFlag) {
                     try {
-                        $this->_invoice->sendEmail();
+                       // $this->_invoice->sendEmail();
+                        $this->invoiceSender->send($this->_invoice);
                     } catch (\Exception $e) {
                         $this->logger->critical($e);
                     }

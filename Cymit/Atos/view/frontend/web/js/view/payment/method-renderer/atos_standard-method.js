@@ -19,18 +19,16 @@ define(
              * @returns {String}
              */
             getInstructions: function () {
-                //window.checkoutConfig.defaultSuccessPageUrl = 'sherlock/payment/redirect';
-                //console.log("try to find instructions:"+this.item.method);
-                //return window.checkoutConfig.payment.instructions[this.item.method];
-                this.isChecked.subscribe(function (code) {
 
-                    console.log('selected payment method code is: ', code);
+                window.sherlockRedirectUrl = 'sherlock/payment/redirect';
+                this.isChecked.subscribe(function (code) {
                     if(code === 'atos_standard'){
                         window.sherlockRedirectUrl = 'sherlock/payment/redirect';
                     }else {
                         window.sherlockRedirectUrl = false;
                     }
-                })
+                });
+
             }
         });
     }

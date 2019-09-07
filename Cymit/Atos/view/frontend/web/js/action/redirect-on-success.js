@@ -17,7 +17,7 @@ define(
              * Provide redirect to page
              */
             execute: function (){
-                console.log("sherlock redirect url+ ", sherlockRedirectUrl);
+                console.log("sherlock redirect url+ ", window.sherlockRedirectUrl);
                 if(window.sherlockRedirectUrl){
                     window.location.replace(url.build(window.sherlockRedirectUrl));
                 }else{
