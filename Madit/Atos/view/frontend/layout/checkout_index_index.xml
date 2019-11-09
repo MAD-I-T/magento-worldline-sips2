@@ -27,7 +27,7 @@
                                                                 <item name="atos-standard" xsi:type="array">
                                                                     <item name="component" xsi:type="string">Madit_Atos/js/view/payment/atos_standard</item>
                                                                     <item name="methods" xsi:type="array">
-                                                                        <item name="atosstandard" xsi:type="array">
+                                                                        <item name="atos_standard" xsi:type="array">
                                                                             <item name="isBillingAddressRequired" xsi:type="boolean">true</item>
                                                                         </item>
                                                                     </item>
