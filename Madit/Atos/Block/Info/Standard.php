@@ -1,13 +1,13 @@
 <?php
 
 namespace Madit\Atos\Block\Info;
-class Standard extends \Magento\Payment\Block\Info\AbstractContainer
+class Standard extends \Magento\Payment\Block\Info
 {
 
     protected function _construct()
     {
         parent::_construct();
-        $this->setTemplate('Madit_Atos::atos/info/standard.phtml');
+        //$this->setTemplate('Madit_Atos::atos/Info/standard.phtml');
     }
 
     /**
