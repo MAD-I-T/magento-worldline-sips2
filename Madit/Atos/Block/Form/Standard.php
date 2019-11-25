@@ -16,4 +16,5 @@ class Standard extends Form
         //explode(',', Mage::getStoreConfig('payment/atos_standard/cctypes'));
     }
 
+
 }
