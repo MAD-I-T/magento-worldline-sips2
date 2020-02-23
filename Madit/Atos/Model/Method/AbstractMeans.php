@@ -14,7 +14,6 @@ use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
 use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
 use Magento\Payment\Gateway\Validator\ValidatorPoolInterface;
 use Magento\Payment\Helper\Data;
-use Magento\Payment\Model\Method\AbstractMethod;
 
 use Magento\Payment\Model\Method\Adapter;
 use Magento\Payment\Model\Method\Logger;

@@ -2,7 +2,7 @@
 
 namespace Madit\Atos\Model;
 
-use  Magento\Payment\Model\Method\AbstractMethod;
+use Magento\Payment\Model\MethodInterface;
 
 class Config extends \Magento\Framework\DataObject
 {
@@ -53,9 +53,9 @@ class Config extends \Magento\Framework\DataObject
     public function getPaymentAction($action)
     {
         switch ($action) {
-            case AbstractMethod::ACTION_AUTHORIZE:
+            case MethodInterface::ACTION_AUTHORIZE:
                 return self::PAYMENT_ACTION_AUTHORIZE;
-            case AbstractMethod::ACTION_AUTHORIZE_CAPTURE:
+            case MethodInterface::ACTION_AUTHORIZE_CAPTURE:
                 return self::PAYMENT_ACTION_CAPTURE;
         }
     }
@@ -68,8 +68,8 @@ class Config extends \Magento\Framework\DataObject
     public function getPaymentActions()
     {
         $paymentActions = [
-            AbstractMethod::ACTION_AUTHORIZE_CAPTURE => __('Author Capture'),
-            AbstractMethod::ACTION_AUTHORIZE => __('Validation')
+            MethodInterface::ACTION_AUTHORIZE_CAPTURE => __('Author Capture'),
+            MethodInterface::ACTION_AUTHORIZE => __('Validation')
         ];
         return $paymentActions;
     }
