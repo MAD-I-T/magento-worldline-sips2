@@ -8,8 +8,10 @@
 
 namespace Madit\Atos\Controller\Payment;
 
-
 use Madit\Atos\Controller\Index\Index;
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
 
 class AutoResponse extends Index
 {
@@ -18,7 +20,6 @@ class AutoResponse extends Index
      * @var \Madit\Atos\Model\Ipn
      */
     protected $ipnService;
-
 
     /**
      * AutoResponse constructor.
@@ -66,8 +67,7 @@ class AutoResponse extends Index
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Element\BlockFactory $blockFactory,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    )
-    {
+    ) {
         $this->ipnService = $ipnService;
         parent::__construct(
             $moduleDirReader,
@@ -110,4 +110,5 @@ class AutoResponse extends Index
 
         $this->ipnService->processIpnResponse($_REQUEST['DATA'], $this->getMethodInstance());
     }
+
 }

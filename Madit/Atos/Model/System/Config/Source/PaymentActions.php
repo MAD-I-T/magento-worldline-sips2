@@ -16,12 +16,9 @@ class PaymentActions implements \Magento\Framework\Option\ArrayInterface
      */
     public function __construct(
         \Madit\Atos\Model\Config $config
-    )
-    {
+    ) {
         $this->atosConfig = $config;
     }
-
-
 
     /**
      * Options getter
@@ -33,5 +30,4 @@ class PaymentActions implements \Magento\Framework\Option\ArrayInterface
         $configModel = $this->atosConfig;
         return $configModel->getPaymentActions();
     }
-
 }

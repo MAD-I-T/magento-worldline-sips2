@@ -2,9 +2,15 @@
 
 namespace Madit\Atos\Model\Method;
 
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Gateway\Validator\ValidatorPoolInterface;
+use Magento\Payment\Model\Method\Logger;
+
 class Standard extends \Madit\Atos\Model\Method\AbstractMeans
 {
-
     protected $_code = 'atos_standard';
     protected $_formBlockType = 'Madit\Atos\Block\Form\Standard';
     protected $_infoBlockType = 'Madit\Atos\Block\Info\Standard';
@@ -21,13 +27,32 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
     protected $storeManager;
     protected $urlInterface;
 
-
     /**
-     * Standard constructor.
+     * @param ManagerInterface $eventManager
+     * @param ValueHandlerPoolInterface $valueHandlerPool
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
+     * @param string $code
+     * @param string $formBlockType
+     * @param string $infoBlockType
+     * @param CommandPoolInterface|null $commandPool
+     * @param ValidatorPoolInterface|null $validatorPool
+     * @param \Magento\Payment\Gateway\Command\CommandManagerInterface|null $commandExecutor
+     * @param \Madit\Atos\Model\Config $config
+     * @param \Madit\Atos\Model\Api\Request $requestApi
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
+     * @param \Magento\Sales\Model\Order $orderInterface
      * @param \Magento\Store\Model\StoreManager $storeManager
      * @param \Magento\Framework\UrlInterface $urlInterface
+     * @param array $data
      */
     public function __construct(
+        ManagerInterface $eventManager,
+        ValueHandlerPoolInterface $valueHandlerPool,
+        PaymentDataObjectFactory $paymentDataObjectFactory,
+        string $code,
+        string $formBlockType,
+        string $infoBlockType,
         \Madit\Atos\Model\Config $config,
         \Madit\Atos\Model\Api\Request $requestApi,
         \Magento\Checkout\Model\Session $checkoutSession,
@@ -35,20 +60,29 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
         \Magento\Sales\Model\Order $orderInterface,
         \Magento\Store\Model\StoreManager $storeManager,
         \Magento\Framework\UrlInterface $urlInterface,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
-        \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory,
-        \Magento\Payment\Helper\Data $paymentData,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->storeManager = $storeManager;
         $this->urlInterface = $urlInterface;
 
+        parent::__construct(
+            $eventManager,
+            $valueHandlerPool,
+            $paymentDataObjectFactory,
+            $code,
+            $formBlockType,
+            $infoBlockType,
+            $config,
+            $requestApi,
+            $checkoutSession,
+            $quoteFactory,
+            $orderInterface,
+            $logger,
+            $data
+        );
+
+        /*
         parent::__construct(
             $config,
             $requestApi,
@@ -66,6 +100,7 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
             $resourceCollection,
             $data
         );
+        */
     }
 
     /**
@@ -89,8 +124,9 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
         $parameters .= " language=" . $this->getConfig()->getLanguageCode();
         $parameters .= " payment_means=" . $this->_getPaymentMeans();
 
-        if ($this->_getCaptureDay() > 0)
+        if ($this->_getCaptureDay() > 0) {
             $parameters .= " capture_day=" . $this->_getCaptureDay();
+        }
 
         $parameters .= " capture_mode=" . $this->_getCaptureMode();
         $parameters .= " customer_id=" . $this->_getCustomerId();
@@ -103,8 +139,9 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
         $binPath = $this->getConfig()->getBinRequest();
 
         // Debug
-        if ($this->getConfigData('debug'))
+        if ($this->getConfigData('debug')) {
             $this->debugRequest($parameters);
+        }
 
         $sips = $this->getApiRequest()->doRequest($parameters, $binPath);
 
@@ -163,7 +200,7 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
      */
     protected function _getAutomaticResponseUrl()
     {
-       // return Mage::getUrl('atos/payment_standard/automatic', array('_secure' => true));
+        // return Mage::getUrl('atos/payment_standard/automatic', array('_secure' => true));
         return $this->urlInterface->getUrl('sherlock/payment/autoresponse');
     }
 
@@ -197,5 +234,4 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
     {
         return $this->getConfig()->getPaymentAction($this->getConfigData('payment_action'));
     }
-
 }

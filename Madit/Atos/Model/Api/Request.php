@@ -1,9 +1,8 @@
 <?php
 namespace Madit\Atos\Model\Api;
+
 class Request
 {
-
-
     protected $logger;
     public function __construct(\Psr\Log\LoggerInterface $logger)
     {
@@ -18,13 +17,13 @@ class Request
         $sips_values = explode('!', $sips_result);
 
         // Récupération des paramètres
-        $sips = array(
+        $sips = [
             'code' => $sips_values[1],
             'error' => $sips_values[2],
             'message' => $sips_values[3],
             'command' => "$binPath $parameters",
             'output' => $sips_result
-        );
+        ];
 
         if (!isset($sips['code'])) {
             $this->logger->critical(new \Exception($sips_result));
@@ -36,5 +35,4 @@ class Request
 
         return $sips;
     }
-
 }

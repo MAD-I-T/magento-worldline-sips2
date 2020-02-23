@@ -1,14 +1,17 @@
 <?php
 namespace Madit\Atos\Controller\Index;
+
 use Madit\Atos\Model\Api\Request;
 use Madit\Atos\Model\Api\Response;
 use Madit\Atos\Model\Config;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ResponseInterface;
 use Madit\EdiSync\Helper\Data;
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
 {
 
     /* @var \Magento\Checkout\Model\Session */
@@ -23,27 +26,25 @@ class Index extends \Magento\Framework\App\Action\Action
     /**
     * @var \Madit\Atos\Model\Config
     */
-   protected $_config;
+    protected $_config;
 
-   /**
-    * @var \Madit\Atos\Model\Api\Request
-    */
-   protected $_requestApi;
+    /**
+     * @var \Madit\Atos\Model\Api\Request
+     */
+    protected $_requestApi;
 
-   /*
-    *  @var \Madit\Atos\Model\Method\Standard
-    */
-   protected $_standardMethod;
+    /*
+     *  @var \Madit\Atos\Model\Method\Standard
+     */
+    protected $_standardMethod;
 
-   /* @var \Magento\Customer\Model\Session $customerSession */
-   protected $customerSession;
+    /* @var \Magento\Customer\Model\Session $customerSession */
+    protected $customerSession;
 
-
-   /**
-    * @var \Madit\Atos\Model\Api\Response
-    */
-   protected $_responseApi ;
-
+    /**
+     * @var \Madit\Atos\Model\Api\Response
+     */
+    protected $_responseApi;
 
     /**
      * @var \Madit\Atos\Model\Session
@@ -63,14 +64,9 @@ class Index extends \Magento\Framework\App\Action\Action
     /*
      *  @var \Madit\Atos\Model\Ipn $atosIpn
      */
-    protected  $atosIpn;
-
-
-
+    protected $atosIpn;
 
     protected $_blockFactory;
-
-
 
     /** @var \Magento\Framework\View\Result\PageFactory $resultPageFactory **/
     protected $resultFactory;
@@ -408,7 +404,8 @@ class Index extends \Magento\Framework\App\Action\Action
     }
     */
 
-    protected function getMethodInstance(){
+    protected function getMethodInstance()
+    {
         return $this->_standardMethod;
     }
     /**
@@ -416,10 +413,10 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     protected function _getAtosResponse($data)
     {
-        $response = $this->getApiResponse()->doResponse($data, array(
+        $response = $this->getApiResponse()->doResponse($data, [
             'bin_response' => $this->getConfig()->getBinResponse(),
             'pathfile' => $this->getMethodInstance()->getConfig()->getPathfile()
-        ));
+        ]);
 
         //die('Hash code: '.isset($response['hash']['code']).' reponse is: '.print_r($response, 1));
         if (!isset($response['hash']['code'])) {
@@ -444,5 +441,21 @@ class Index extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         // TODO: Implement execute() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }

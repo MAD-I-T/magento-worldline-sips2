@@ -1,26 +1,26 @@
 <?php
 namespace Madit\Atos\Controller\Payment;
-use Madit\Atos\Model\Api\Request;
-use Madit\Atos\Model\Api\Response;
-use Madit\Atos\Model\Config;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Backend\App\Action;
-use Madit\EdiSync\Helper\Data;
-use Magento\Framework\Exception\LocalizedException;
-
 
 use Madit\Atos\Controller\Index\Index;
-class NormalCallback extends Index
+use Madit\Atos\Model\Api\Request;
+use Madit\Atos\Model\Api\Response;
+use Madit\EdiSync\Helper\Data;
+
+use Magento\Framework\App\CsrfAwareActionInterface;
+use Magento\Framework\App\Request\InvalidRequestException;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Exception\LocalizedException;
+
+class NormalCallback extends Index implements CsrfAwareActionInterface
 {
     /**
      * Dispatch request
      * When customer returns from Atos/Sips payment platform
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @throws LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute()
     {
-
         if (!array_key_exists('DATA', $_REQUEST)) {
 
             // Set redirect message
@@ -28,6 +28,9 @@ class NormalCallback extends Index
             // Log error
             $errorMessage = __('Customer #%1 returned successfully from Atos/Sips payment platform but no data received for order #%2.', $this->getCustomerSession()->getCustomerId(), $this->getCheckoutSession()->getLastRealOrder()->getId());
 
+
+
+            echo "<pre> request: print_r($_REQUEST, 1)</pre>";
             $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
 
             // Redirect
@@ -41,11 +44,12 @@ class NormalCallback extends Index
         //echo var_dump($_REQUEST['DATA']);
         //$this->logger->debug(var_dump($_REQUEST['DATA']));
 
+        //$this->atosHelper->logError(get_class($this), __FUNCTION__, $response['hash']);
         // Debug
         $this->getMethodInstance()->debugResponse($response['hash'], 'Normal');
 
         // Check if merchant ID matches
-        if ($response['hash']['merchant_id'] != $this->getConfig()->getMerchantId()) {
+        if ($response['hash']['merchant_id'] != $this->getconfig()->getMerchantId()) {
             // Set redirect message
             $this->getAtosSession()->setRedirectMessage(('An error occured: merchant ID mismatch.'));
             // Log error
@@ -65,8 +69,9 @@ class NormalCallback extends Index
         switch ($response['hash']['response_code']) {
             case '00':
                 if ($order->getId()) {
-                    $order->addStatusHistoryComment(('Customer returned successfully from Atos/Sips payment platform.'))
-                        ->save();
+                    $order->addCommentToStatusHistory(_('Customer returned successfully from Atos/Sips payment platform.'))->save();
+                    //addStatusHistoryComment(('Customer returned successfully from Atos/Sips payment platform.'))
+                     //   ->save();
                 }
                 $this->getCheckoutSession()->getQuote()->setIsActive(false)->save();
                 // Set redirect URL
@@ -86,7 +91,7 @@ class NormalCallback extends Index
                         } catch (\Exception $e) {
                             $this->logger->critical($e);
                             $errorMessage .= '<br/><br/>';
-                            $errorMessage .= __('The order has not been cancelled.'). ' : ' . $e->getMessage();
+                            $errorMessage .= __('The order has not been cancelled.') . ' : ' . $e->getMessage();
                             $order->addStatusHistoryComment($errorMessage)->save();
                         }
                     } else {
@@ -97,7 +102,6 @@ class NormalCallback extends Index
 
                     // Refill cart
                     $this->atosHelper->reorder($response['hash']['order_id']);
-
                 }
                 // Set redirect message
                 $this->getAtosSession()->setRedirectTitle(('Your payment has been rejected'));
@@ -111,6 +115,22 @@ class NormalCallback extends Index
         // Save Atos/Sips response in session
         $this->getAtosSession()->setResponse($response);
 
-        $this->_redirect($response['redirect_url'], array('_secure' => true));
+        $this->_redirect($response['redirect_url'], ['_secure' => true]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateForCsrf(RequestInterface $request): ?bool
+    {
+        return true;
     }
 }

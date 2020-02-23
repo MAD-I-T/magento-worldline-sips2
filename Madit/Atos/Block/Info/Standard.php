@@ -7,7 +7,7 @@ class Standard extends \Magento\Payment\Block\Info
     protected function _construct()
     {
         parent::_construct();
-        //$this->setTemplate('Madit_Atos::atos/Info/standard.phtml');
+        $this->setTemplate('Madit_Atos::atos/info/standard.phtml');
     }
 
     /**

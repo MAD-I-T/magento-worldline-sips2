@@ -38,6 +38,10 @@
                 <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
                     <label>Title</label>
                 </field>
+                <field id="merchant_id" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
+                    <label>Merchant ID</label>
+                    <comment>Identifiant marchant</comment>
+                </field>
                 <field id="order_status" type="select" sortOrder="23" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
                     <label>New Order Status</label>
                     <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>

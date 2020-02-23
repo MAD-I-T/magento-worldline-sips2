@@ -1,17 +1,25 @@
 <?php
 namespace Madit\Atos\Model;
+
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
-use \Magento\Sales\Model\Order;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\OrderRepository;
+
 /**
  * Atos/Sips Instant Payment Notification processor model
  */
 class Ipn
 {
-
     protected $_api = null;
     protected $_config = null;
     protected $_invoice = null;
     protected $_invoiceFlag = false;
+    /**
+     * @var \Madit\Atos\Model\Method\AbstractMeans
+     */
     protected $_methodInstance = null;
 
     /**
@@ -35,6 +43,11 @@ class Ipn
     protected $logger;
 
     /**
+     * @var OrderRepository
+     */
+    protected $orderRepository;
+
+    /**
      * @var \Magento\Framework\App\ResponseInterface $responseInterface
      */
     protected $responseInterface;
@@ -49,7 +62,6 @@ class Ipn
      */
     protected $orderInterface;
 
-
     /**
      * @var Order\Email\Sender\InvoiceSender
      */
@@ -59,12 +71,19 @@ class Ipn
      * Ipn constructor.
      * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
      * @param Api\Files $filesApi
+     * @param Config $config
      * @param Api\Response $responseApi
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Psr\Log\LoggerInterface $logger
      * @param Adminhtml\System\Config\Source\Payment\Cctype $ccType
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\App\ResponseInterface $responseInterface
+     * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
+     * @param Order $orderInterface
+     * @param \Magento\Framework\DB\Transaction $transactionFactory
+     * @param Order\Email\Sender\OrderSender $orderSender
+     * @param Order\Email\Sender\InvoiceSender $invoiceSender
+     * @param OrderRepository $orderRepository
      */
 
     public function __construct(
@@ -81,7 +100,8 @@ class Ipn
         \Magento\Sales\Model\Order $orderInterface,
         \Magento\Framework\DB\Transaction $transactionFactory,
         \Magento\Sales\Model\Order\Email\Sender\OrderSender  $orderSender,
-        \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender
+        \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender,
+        OrderRepository $orderRepository
     ) {
         $this->moduleDirReader = $moduleDirReader;
         $this->filesApi = $filesApi;
@@ -97,23 +117,28 @@ class Ipn
         $this->invoiceService = $invoiceService;
         $this->orderSender = $orderSender;
         $this->invoiceSender = $invoiceSender;
+        $this->orderRepository = $orderRepository;
     }
 
-
+    /**
+     * Decode Sips server response
+     *
+     * @param string $data
+     * @param \Madit\Atos\Model\Method\AbstractMeans $methodInstance
+     */
     public function processIpnResponse($data, $methodInstance)
     {
         // Init instance
         $this->_methodInstance = $methodInstance;
         $this->_config = $this->_methodInstance->getConfig();
 
-
         // Decode Sips Server Response
         $response = $this->_decodeResponse($data);
 
-        $this->logger->debug("Poccess auto bank 1".print_r($response, 1));
+        $this->logger->debug("Poccess auto bank 1" . print_r($response, 1));
         if (!array_key_exists('hash', $response)) {
-            $this->_methodInstance->debugData('Can\'t retrieve Sips decoded response.');
-                $this->responseInterface
+            $this->_methodInstance->debugResponse('Can\'t retrieve Sips decoded response.');
+            $this->responseInterface
                     ->setStatusCode(\Magento\Framework\App\Response\Http::STATUS_CODE_503)
                     ->sendResponse();
             exit;
@@ -142,10 +167,10 @@ class Ipn
      */
     protected function _decodeResponse($response)
     {
-        $this->_response = $this->_api->doResponse($response, array(
+        $this->_response = $this->_api->doResponse($response, [
             'bin_response' => $this->_config->getBinResponse(),
             'pathfile' => $this->_config->getPathfile()
-        ));
+        ]);
 
         return $this->_response;
     }
@@ -189,7 +214,7 @@ class Ipn
         if (empty($this->_order)) {
             // Check order ID existence
             if (!array_key_exists('order_id', $this->_response['hash'])) {
-                $this->_methodInstance->debugData('No order ID found in response data.');
+                $this->_methodInstance->debugResponse('No order ID found in response data.');
                 $this->responseInterface
                     ->setStatusCode(\Magento\Framework\App\Response\Http::STATUS_CODE_503)
                     ->sendResponse();
@@ -217,7 +242,7 @@ class Ipn
     {
         // Check response code existence
 
-        $this->logger->debug("Poccess auto bank".print_r($this->_response, 1));
+        $this->logger->debug("Poccess auto bank" . print_r($this->_response, 1));
         if (!array_key_exists('response_code', $this->_response['hash'])) {
             $this->_methodInstance->debugData('No response code found in response data.');
             $this->responseInterface
@@ -228,7 +253,7 @@ class Ipn
 
         // Get order to update
         $this->_getOrder();
-        $messages = array();
+        $messages = [];
 
         switch ($this->_response['hash']['response_code']) {
             case '00': // Success order
@@ -246,11 +271,20 @@ class Ipn
 
                 // Add messages to order history
                 foreach ($messages as $message) {
-                    $this->_order->addStatusHistoryComment($message);
+                    $this->_order->addCommentToStatusHistory($message);
                 }
 
                 // Save order
-                $this->_order->save();
+                try {
+                    $this->orderRepository->save($this->_order);
+                } catch (\Exception $e) {
+                    $this->logger->critical($e);
+                    $this->responseInterface
+                        ->setStatusCode(\Magento\Framework\App\Response\Http::STATUS_CODE_503)
+                        ->sendResponse();
+                    exit;
+                }
+
 
                 // Send order confirmation email
                 if (!$this->_order->getEmailSent() && $this->_order->getCanSendNewEmailFlag()) {
@@ -264,7 +298,7 @@ class Ipn
                 // Send invoice email
                 if ($this->_invoiceFlag) {
                     try {
-                       // $this->_invoice->sendEmail();
+                        // $this->_invoice->sendEmail();
                         $this->invoiceSender->send($this->_invoice);
                     } catch (\Exception $e) {
                         $this->logger->critical($e);
@@ -285,18 +319,18 @@ class Ipn
             // Set transaction
             $payment = $this->_order->getPayment();
             $payment->setTransactionId($this->_response['hash']['transaction_id']);
-            $data = array(
+            $data = [
                 'cc_type' => $this->_response['hash']['payment_means'],
                 'cc_exp_month' => substr($this->_response['hash']['card_validity'], 4, 2),
                 'cc_exp_year' => substr($this->_response['hash']['card_validity'], 0, 4),
                 'cc_last4' => $this->_response['hash']['card_number']
-            );
+            ];
 
             $payment->addData($data);
             $payment->save();
 
             // Add authorization transaction
-            if (!$this->_order->isCanceled() && $this->_methodInstance->canAuthorize()) {
+            if (!$this->_order->isCanceled()) {
                 $payment->authorize(true, $this->_order->getBaseGrandTotal());
                 $payment->setAmountAuthorized($this->_order->getTotalDue());
                 if ($this->_response['hash']['capture_mode'] == \Madit\Atos\Model\Config::PAYMENT_ACTION_CAPTURE ||
@@ -305,8 +339,8 @@ class Ipn
                 }
             }
 
-            $this->_order->save();
-        } catch (Exception $e) {
+            $this->orderRepository->save($this->_order);
+        } catch (\Exception $e) {
             $this->logger->critical($e);
             $this->responseInterface
                 ->setStatusCode(\Magento\Framework\App\Response\Http::STATUS_CODE_503)
@@ -351,7 +385,8 @@ class Ipn
 
         if ($this->_order->canCancel()) {
             try {
-                $this->_order->registerCancellation($message)->save();
+                $this->_order->registerCancellation($message);
+                $this->orderRepository->save($this->_order);
             } catch (LocalizedException $e) {
                 $hasError = true;
                 $this->logger->critical($e);
@@ -359,7 +394,7 @@ class Ipn
                 $hasError = true;
                 $this->logger->critical($e);
                 $message .= '<br /><br />';
-                $message .= __('The order has not been cancelled.'). ' : ' . $e->getMessage();
+                $message .= __('The order has not been cancelled.') . ' : ' . $e->getMessage();
                 $this->_order->addStatusHistoryComment($message)->save();
             }
         } else {
@@ -375,5 +410,4 @@ class Ipn
             exit;
         }
     }
-
 }

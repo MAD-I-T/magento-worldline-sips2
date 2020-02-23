@@ -13,7 +13,6 @@ use Madit\Atos\Controller\Index\Index;
 class Redirect extends Index
 {
 
-
     /**
      * Dispatch request
      * When a customer chooses Atos/Sips Standard on Checkout/Payment page
@@ -26,6 +25,5 @@ class Redirect extends Index
         $this->getCheckoutSession()->unsQuoteId();
         $this->getCheckoutSession()->unsRedirectUrl();
         return $resultPage;
-
     }
 }

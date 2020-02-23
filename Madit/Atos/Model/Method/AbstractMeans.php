@@ -2,11 +2,28 @@
 
 namespace Madit\Atos\Model\Method;
 
-use  Magento\Payment\Model\Method\AbstractMethod;
-use \Magento\Sales\Model\Order;
-abstract class AbstractMeans extends AbstractMethod
-{
+use Madit\Atos\Model\Api\Request;
+use Madit\Atos\Model\Config;
+use Magento\Checkout\Model\Session;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use Magento\Payment\Gateway\Command\CommandManagerInterface;
+use  Magento\Payment\Gateway\Command\CommandPoolInterface;
+use Magento\Payment\Gateway\Config\ValueHandlerPoolInterface;
+use Magento\Payment\Gateway\Data\PaymentDataObjectFactory;
+use Magento\Payment\Gateway\Validator\ValidatorPoolInterface;
+use Magento\Payment\Helper\Data;
+use Magento\Payment\Model\Method\AbstractMethod;
 
+use Magento\Payment\Model\Method\Adapter;
+use Magento\Payment\Model\Method\Logger;
+use Magento\Quote\Model\Quote;
+use Magento\Quote\Model\QuoteFactory;
+use Magento\Sales\Model\Order;
+
+abstract class AbstractMeans extends Adapter
+{
     protected $_isOffline = true;
 
     protected $_response = null;
@@ -14,6 +31,7 @@ abstract class AbstractMeans extends AbstractMethod
     protected $_message = null;
     protected $_error = false;
     protected $_config;
+    protected $_logger;
     //@var \Magento\Sales\Model\Order $_order
     protected $_order;
     protected $_quote;
@@ -24,32 +42,37 @@ abstract class AbstractMeans extends AbstractMethod
     protected $lastRealOrderId;
     protected $lastOrderId;
 
-    /* @var \Magento\Sales\Model\Order */
+    /* @var Order */
     protected $orderInterface;
 
-
     /**
-     * @param \Madit\Atos\Model\Config $config,
-     * @param \Madit\Atos\Model\Api\Request $requestApi,
-     * @param \Magento\Checkout\Model\Session $checkoutSession,
-     * @param \Magento\Quote\Model\QuoteFactory $quoteFactory,
-     * @param \Magento\Sales\Model\Order $orderInterface
+     * @param ManagerInterface $eventManager
+     * @param ValueHandlerPoolInterface $valueHandlerPool
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory
+     * @param string $code
+     * @param string $formBlockType
+     * @param string $infoBlockType
+     * @param Config $config
+     * @param Request $requestApi
+     * @param Session $checkoutSession
+     * @param QuoteFactory $quoteFactory
+     * @param Order $orderInterface
+     * @param Logger $logger
+     * @param array $data
      */
     public function __construct(
-        \Madit\Atos\Model\Config $config,
-        \Madit\Atos\Model\Api\Request $requestApi,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Quote\Model\QuoteFactory $quoteFactory,
-        \Magento\Sales\Model\Order $orderInterface,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Api\ExtensionAttributesFactory $extensionFactory,
-        \Magento\Framework\Api\AttributeValueFactory $customAttributeFactory,
-        \Magento\Payment\Helper\Data $paymentData,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        ManagerInterface $eventManager,
+        ValueHandlerPoolInterface $valueHandlerPool,
+        PaymentDataObjectFactory $paymentDataObjectFactory,
+        string $code,
+        string $formBlockType,
+        string $infoBlockType,
+        Config $config,
+        Request $requestApi,
+        Session $checkoutSession,
+        QuoteFactory $quoteFactory,
+        Order $orderInterface,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->config = $config;
@@ -57,17 +80,17 @@ abstract class AbstractMeans extends AbstractMethod
         $this->checkoutSession = $checkoutSession;
         $this->quoteFactory = $quoteFactory;
         $this->orderInterface = $orderInterface;
+        $this->_logger = $logger;
 
-        parent::__construct($context,
-            $registry,
-            $extensionFactory,
-            $customAttributeFactory,
-            $paymentData,
-            $scopeConfig,
-            $logger,
-            $resource,
-            $resourceCollection,
-            $data);
+        parent::__construct(
+            $eventManager,
+            $valueHandlerPool,
+            $paymentDataObjectFactory,
+            $code,
+            $formBlockType,
+            $infoBlockType
+        );
+
         $this->lastOrderId =  $this->checkoutSession->getLastOrderId();
         $this->lastRealOrderId =  $this->checkoutSession->getLastRealOrderId();
         $this->quoteId = $this->checkoutSession->getQuoteId();
@@ -110,17 +133,15 @@ abstract class AbstractMeans extends AbstractMethod
      *
      * @return string
      */
-    abstract function getOrderPlaceRedirectUrl();
-
-
+    abstract public function getOrderPlaceRedirectUrl();
 
     public function initialize($paymentAction, $stateObject)
     {
         switch ($paymentAction) {
 
-            case AbstractMethod::ACTION_AUTHORIZE:
-            case AbstractMethod::ACTION_AUTHORIZE_CAPTURE:
-                $stateObject->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+            case Adapter::ACTION_AUTHORIZE:
+            case Adapter::ACTION_AUTHORIZE_CAPTURE:
+                $stateObject->setState(Order::STATE_PENDING_PAYMENT);
                 $stateObject->setStatus('pending_payment');
                 $stateObject->setIsNotified(false);
                 break;
@@ -172,7 +193,7 @@ abstract class AbstractMeans extends AbstractMethod
     /**
      * Get config model
      *
-     * @return \Madit\Atos\Model\Config
+     * @return Config
      */
     public function getConfig()
     {
@@ -185,7 +206,7 @@ abstract class AbstractMeans extends AbstractMethod
     /**
      * Get Atos API Request Model
      *
-     * @return \Madit\Atos\Model\Api\Request
+     * @return Request
      */
     public function getApiRequest()
     {
@@ -195,11 +216,10 @@ abstract class AbstractMeans extends AbstractMethod
     /**
      * Get current quote
      *
-     * @return \Magento\Quote\Model\Quote
+     * @return Quote
      */
     protected function _getQuote()
     {
-
         if (empty($this->_quote)) {
             $this->_quote = $this->quoteFactory->create()->loadActive($this->quoteId);
         }
@@ -209,7 +229,7 @@ abstract class AbstractMeans extends AbstractMethod
     /**
      * Get current order
      *
-     * @return \Magento\Sales\Model\Order
+     * @return Order
      */
     protected function _getOrder()
     {
@@ -218,8 +238,8 @@ abstract class AbstractMeans extends AbstractMethod
         }
 
         //echo '<pre> amount:  '.$this->_order->getTotalDue()
-          //  ." \n real id ". $this->lastOrderId
-            //." \norder id toto printr ". $this->lastRealOrderId .'</pre>';
+        //  ." \n real id ". $this->lastOrderId
+        //." \norder id toto printr ". $this->lastRealOrderId .'</pre>';
         return $this->_order;
     }
 
@@ -230,10 +250,11 @@ abstract class AbstractMeans extends AbstractMethod
      */
     protected function _getAmount()
     {
-        if ($this->_getOrder())
+        if ($this->_getOrder()) {
             $total = $this->_getOrder()->getTotalDue();
-        else
+        } else {
             $total = 0;
+        }
 
         return number_format($total, 2, '', '');
     }
@@ -245,10 +266,11 @@ abstract class AbstractMeans extends AbstractMethod
      */
     protected function _getCustomerId()
     {
-        if ($this->_getOrder())
+        if ($this->_getOrder()) {
             return (int) $this->_getOrder()->getCustomerId();
-        else
+        } else {
             return 0;
+        }
     }
 
     /**
@@ -258,10 +280,11 @@ abstract class AbstractMeans extends AbstractMethod
      */
     protected function _getCustomerEmail()
     {
-        if ($this->_getOrder())
+        if ($this->_getOrder()) {
             return $this->_getOrder()->getCustomerEmail();
-        else
+        } else {
             return 'undefined';
+        }
     }
 
     /**
@@ -292,18 +315,20 @@ abstract class AbstractMeans extends AbstractMethod
     protected function _getBinRequest()
     {
         //return Mage::getBaseDir('base') . DS . Mage::getStoreConfig('atos_api/config_bin_files/request_path');
-        return $this->moduleDirReader->getModuleDir('','Madit_Atos').'view/res/'.$this->_code.'/bin/static/request';
+        return $this->moduleDirReader->getModuleDir('', 'Madit_Atos') . 'view/res/' . $this->_code . '/bin/static/request';
     }
 
     public function debugRequest($data)
     {
-        $this->debugData(array('type' => 'request', 'parameters' => $data));
+        $this->_logger->debug(['type' => 'request', 'parameters' => $data]);
+        //$this->debugData(['type' => 'request', 'parameters' => $data]);
     }
 
     public function debugResponse($data, $from = '')
     {
         ksort($data);
-        $this->debugData(array('type' => "{$from} response", 'parameters' => $data));
-    }
 
+        $this->_logger->debug(['type' => "{$from} response", 'parameters' => $data]);
+        //$this->debugData(['type' => "{$from} response", 'parameters' => $data]);
+    }
 }

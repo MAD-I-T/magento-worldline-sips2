@@ -1,10 +1,10 @@
 <?php
 
-namespace Madit\Atos\Model;
+namespace Madit\Atos\Gateway\Config;
 
 use  Magento\Payment\Model\Method\AbstractMethod;
 
-class Config extends \Magento\Framework\DataObject
+class Config
 {
     const PAYMENT_ACTION_CAPTURE = 'AUTHOR_CAPTURE';
     const PAYMENT_ACTION_AUTHORIZE = 'VALIDATION';
@@ -19,6 +19,11 @@ class Config extends \Magento\Framework\DataObject
 
     /**
      * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
+     * @param \Madit\Atos\Model\Api\Files $filesApi
+     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+     * @param \Madit\Atos\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType
+     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param array $data
      */
     public function __construct(
         \Magento\Framework\Module\Dir\Reader $moduleDirReader,
@@ -33,7 +38,7 @@ class Config extends \Magento\Framework\DataObject
         $this->scopeConfig = $scopeConfig;
         $this->ccType = $ccType;
         $this->storeManager = $storeManager;
-        parent::__construct($data);
+        //parent::__construct($data);
     }
 
     /* @return \Madit\Atos\Model\Config */

@@ -15,23 +15,21 @@ class Datafield implements \Magento\Framework\Option\ArrayInterface
      */
     public function __construct(
         \Madit\Atos\Model\Config $config
-    )
-    {
+    ) {
         $this->atosConfig = $config;
     }
 
     public function toOptionArray()
     {
-        $options = array();
+        $options = [];
 
         foreach ($this->atosConfig->getDataFieldKeys() as $code => $name) {
-            $options[] = array(
+            $options[] = [
                 'value' => $code,
                 'label' => $name
-            );
+            ];
         }
 
         return $options;
     }
-
 }
