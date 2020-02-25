@@ -5,7 +5,6 @@
  */
 namespace Madit\Atos\Model\Ui;
 
-use Madit\Atos\Gateway\Config\Config;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 
@@ -25,11 +24,11 @@ final class ConfigProvider implements ConfigProviderInterface
 
     /**
      * ConfigProvider constructor.
-     * @param Config $config
+     * @param \Madit\Atos\Model\Config $config
      * @param SessionManagerInterface $session
      */
     public function __construct(
-        \Madit\Atos\Gateway\Config\Config $config,
+        \Madit\Atos\Model\Config $config,
         SessionManagerInterface $session
     ) {
         $this->_config = $config;

@@ -33,6 +33,7 @@ class Config extends \Magento\Framework\DataObject
         $this->scopeConfig = $scopeConfig;
         $this->ccType = $ccType;
         $this->storeManager = $storeManager;
+        $this->_merchantId = $this->getConfigData('merchant_id', 'atos_standard');
         parent::__construct($data);
     }
 
@@ -81,13 +82,14 @@ class Config extends \Magento\Framework\DataObject
      */
     public function getCertificate()
     {
-        return $this->moduleDirReader->getModuleDir('', 'Madit_Atos') . 'view/res/atos' . $this->_method . '/param/certif.fr.014295303911111.php';
+        return $this->moduleDirReader->getModuleDir('', 'Madit_Atos') . 'view/res/atos' . $this->_method . '/param/certif.fr.' . $this->getMerchantId() . '.php';
     }
 
     /**
      * Get pathfile path
      *
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getPathfile()
     {
@@ -131,17 +133,7 @@ class Config extends \Magento\Framework\DataObject
      */
     public function getMerchantId()
     {
-        if (empty($this->_merchantId)) {
-            $matches = [];
-            preg_match("/certif.[a-z]{2}.[0-9]+/", $this->getCertificate(), $matches);
-            if (isset($matches[0])) {
-                $merchantId = explode('.', $matches[0]);
-                if (array_key_exists('2', $merchantId)) {
-                    $this->_merchantId = $merchantId[2];
-                }
-            }
-        }
-        return $this->_merchantId;
+        return empty($this->_merchantId) ? '014295303911111' : $this->_merchantId;
     }
 
     /**
@@ -344,5 +336,16 @@ class Config extends \Magento\Framework\DataObject
     public function getAuthorizedIps()
     {
         return ["127.0.0.1"];//explode(',', Mage::getStoreConfig('atos_api/' . $this->_method . '/authorized_ips'));
+    }
+
+    public function getConfigData($field, $paymentMethodCode, $storeId = null, $flag = false)
+    {
+        $path = 'payment/' . $paymentMethodCode . '/' . $field;
+
+        if (!$flag) {
+            return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        } else {
+            return $this->scopeConfig->isSetFlag($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId);
+        }
     }
 }
