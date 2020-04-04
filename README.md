@@ -14,4 +14,4 @@ Installation
 
 ```php bin/magento2 module:enable Madit_Atos```
 
- [Tutoriel d'installation et de configuration en français](https://www.madit.fr/blog/notre-blog-1/post/module-de-paiement-lcl-sherlock-sous-magento-2-5#scrollTop=0)
+ [Tutoriel d'installation et de configuration en français](https://www.madit.fr/r/Q1P)
