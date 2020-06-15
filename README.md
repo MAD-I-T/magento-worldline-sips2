@@ -18,7 +18,7 @@ Test accepted transaction infos:
 ```
 CB Number : 4525485465452100
 Expires : 01 2022
-3 back digits : 100```
+3 back digits : 100
 ```
 
 Installation
