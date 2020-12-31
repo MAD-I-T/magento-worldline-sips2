@@ -24,6 +24,6 @@ Expires : 01 2022
 Installation
 ============
 
-```php bin/magento2 module:enable Madit_Atos```
+```php bin/magento module:enable Madit_Atos```
 
  [Tutoriel d'installation et de configuration en français](https://www.madit.fr/r/Q1P)
