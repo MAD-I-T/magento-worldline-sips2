@@ -20,7 +20,7 @@ class Index extends \Magento\Framework\App\Action\Action
     protected $quoteFactory;
 
     /* @var \Magento\Quote\Model\QuoteRepository */
-    protected $quoteReposity;
+    protected $quoteRepository;
 
     /* @var \Magento\Sales\Model\Order */
     protected $orderInterface;
@@ -130,7 +130,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $this->_responseApi = $responseApi;
         $this->checkoutSession = $checkoutSession;
         $this->quoteFactory = $quoteFactory;
-        $this->quoteReposity = $quoteRepository;
+        $this->quoteRepository = $quoteRepository;
         $this->orderInterface = $orderInterface;
         $this->customerSession = $customerSession;
         $this->atosSession = $atosSession;

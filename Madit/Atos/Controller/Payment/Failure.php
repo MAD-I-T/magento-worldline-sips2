@@ -12,7 +12,6 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Failure extends Index
 {
-
     public function __construct(
         \Magento\Framework\Module\Dir\Reader $moduleDirReader,
         \Madit\Atos\Model\Api\Files $filesApi,
@@ -24,6 +23,7 @@ class Failure extends Index
         \Madit\Atos\Model\Api\Response $responseApi,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Quote\Model\QuoteFactory $quoteFactory,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
         \Magento\Sales\Model\Order $orderInterface,
         \Magento\Customer\Model\Session $customerSession,
         \Madit\Atos\Model\Session $atosSession,
@@ -34,8 +34,7 @@ class Failure extends Index
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\View\Element\BlockFactory $blockFactory,
         PageFactory  $resultPageFactory
-    )
-    {
+    ) {
         parent::__construct(
             $moduleDirReader,
             $filesApi,
@@ -47,6 +46,7 @@ class Failure extends Index
             $responseApi,
             $checkoutSession,
             $quoteFactory,
+            $quoteRepository,
             $orderInterface,
             $customerSession,
             $atosSession,
@@ -72,5 +72,4 @@ class Failure extends Index
         $this->getAtosSession()->unsetAll();
         return $resultPage;
     }
-
 }

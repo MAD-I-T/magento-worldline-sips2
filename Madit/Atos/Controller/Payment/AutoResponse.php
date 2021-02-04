@@ -33,6 +33,7 @@ class AutoResponse extends Index
      * @param \Madit\Atos\Model\Api\Response $responseApi
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      * @param \Magento\Sales\Model\Order $orderInterface
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Madit\Atos\Model\Session $atosSession
@@ -57,6 +58,7 @@ class AutoResponse extends Index
         \Madit\Atos\Model\Api\Response $responseApi,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Quote\Model\QuoteFactory $quoteFactory,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
         \Magento\Sales\Model\Order $orderInterface,
         \Magento\Customer\Model\Session $customerSession,
         \Madit\Atos\Model\Session $atosSession,
@@ -80,6 +82,7 @@ class AutoResponse extends Index
             $responseApi,
             $checkoutSession,
             $quoteFactory,
+            $quoteRepository,
             $orderInterface,
             $customerSession,
             $atosSession,
