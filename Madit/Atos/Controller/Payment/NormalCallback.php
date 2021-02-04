@@ -11,7 +11,7 @@ use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-class NormalCallback extends Index implements CsrfAwareActionInterface
+class NormalCallback extends Index
 {
     /**
      * Dispatch request
@@ -30,7 +30,7 @@ class NormalCallback extends Index implements CsrfAwareActionInterface
 
 
 
-            echo "<pre> request: print_r($_REQUEST, 1)</pre>";
+            //echo "<pre> request: print_r($_REQUEST, 1)</pre>";
             $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
 
             // Redirect
@@ -69,11 +69,17 @@ class NormalCallback extends Index implements CsrfAwareActionInterface
         switch ($response['hash']['response_code']) {
             case '00':
                 if ($order->getId()) {
+                    $this->checkoutSession->setLastOrderId($order->getId());
+                    $this->checkoutSession->setLastQuoteId($order->getQuoteId());
+                    $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
                     $order->addCommentToStatusHistory(_('Customer returned successfully from Atos/Sips payment platform.'))->save();
                     //addStatusHistoryComment(('Customer returned successfully from Atos/Sips payment platform.'))
                      //   ->save();
                 }
-                $this->getCheckoutSession()->getQuote()->setIsActive(false)->save();
+                $curQuote = $this->getCheckoutSession()->getQuote();
+                $curQuote->setIsActive(false);
+                $this->quoteReposity->save($curQuote);
+
                 // Set redirect URL
                 $response['redirect_url'] = 'checkout/onepage/success';
                 break;
@@ -118,19 +124,5 @@ class NormalCallback extends Index implements CsrfAwareActionInterface
         $this->_redirect($response['redirect_url'], ['_secure' => true]);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
-    {
-        return null;
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public function validateForCsrf(RequestInterface $request): ?bool
-    {
-        return true;
-    }
 }

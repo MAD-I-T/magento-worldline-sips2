@@ -1,10 +1,7 @@
 <?php
 namespace Madit\Atos\Model;
 
-use Magento\Framework\Exception\AlreadyExistsException;
-use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\OrderRepository;
 
@@ -68,6 +65,11 @@ class Ipn
     protected $invoiceSender;
 
     /**
+     * @var mixed
+     */
+    protected $isDebug;
+
+    /**
      * Ipn constructor.
      * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
      * @param Api\Files $filesApi
@@ -118,6 +120,7 @@ class Ipn
         $this->orderSender = $orderSender;
         $this->invoiceSender = $invoiceSender;
         $this->orderRepository = $orderRepository;
+
     }
 
     /**
@@ -131,11 +134,14 @@ class Ipn
         // Init instance
         $this->_methodInstance = $methodInstance;
         $this->_config = $this->_methodInstance->getConfig();
+        $this->isDebug = $this->_methodInstance->getConfigData("debug");
 
         // Decode Sips Server Response
         $response = $this->_decodeResponse($data);
 
-        $this->logger->debug("Poccess auto bank 1" . print_r($response, 1));
+        if ($this->isDebug) {
+            $this->logger->debug("Poccess auto bank 1" . print_r($response, 1));
+        }
         if (!array_key_exists('hash', $response)) {
             $this->_methodInstance->debugResponse('Can\'t retrieve Sips decoded response.');
             $this->responseInterface
@@ -242,7 +248,9 @@ class Ipn
     {
         // Check response code existence
 
-        $this->logger->debug("Poccess auto bank" . print_r($this->_response, 1));
+        if ($this->isDebug) {
+            $this->logger->debug("Poccess auto bank" . print_r($this->_response, 1));
+        }
         if (!array_key_exists('response_code', $this->_response['hash'])) {
             $this->_methodInstance->debugData('No response code found in response data.');
             $this->responseInterface
@@ -284,7 +292,6 @@ class Ipn
                         ->sendResponse();
                     exit;
                 }
-
 
                 // Send order confirmation email
                 if (!$this->_order->getEmailSent() && $this->_order->getCanSendNewEmailFlag()) {

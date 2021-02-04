@@ -5,13 +5,12 @@ use Madit\Atos\Model\Api\Request;
 use Madit\Atos\Model\Api\Response;
 use Madit\Atos\Model\Config;
 use Madit\EdiSync\Helper\Data;
-use Magento\Framework\App\CsrfAwareActionInterface;
 use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareActionInterface
+class Index extends \Magento\Framework\App\Action\Action
 {
 
     /* @var \Magento\Checkout\Model\Session */
@@ -19,6 +18,9 @@ class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareAct
 
     /* @var \Magento\Quote\Model\QuoteFactory */
     protected $quoteFactory;
+
+    /* @var \Magento\Quote\Model\QuoteRepository */
+    protected $quoteReposity;
 
     /* @var \Magento\Sales\Model\Order */
     protected $orderInterface;
@@ -83,6 +85,7 @@ class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareAct
      * @param Response $responseApi
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
      * @param \Magento\Sales\Model\Order $orderInterface
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Madit\Atos\Model\Session $atosSession
@@ -105,6 +108,7 @@ class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareAct
         \Madit\Atos\Model\Api\Response $responseApi,
         \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Quote\Model\QuoteFactory $quoteFactory,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository,
         \Magento\Sales\Model\Order $orderInterface,
         \Magento\Customer\Model\Session $customerSession,
         \Madit\Atos\Model\Session $atosSession,
@@ -126,6 +130,7 @@ class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareAct
         $this->_responseApi = $responseApi;
         $this->checkoutSession = $checkoutSession;
         $this->quoteFactory = $quoteFactory;
+        $this->quoteReposity = $quoteRepository;
         $this->orderInterface = $orderInterface;
         $this->customerSession = $customerSession;
         $this->atosSession = $atosSession;
@@ -443,19 +448,4 @@ class Index extends \Magento\Framework\App\Action\Action implements CsrfAwareAct
         // TODO: Implement execute() method.
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function createCsrfValidationException(RequestInterface $request): ?InvalidRequestException
-    {
-        return null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function validateForCsrf(RequestInterface $request): ?bool
-    {
-        return true;
-    }
 }

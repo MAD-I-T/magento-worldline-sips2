@@ -27,3 +27,7 @@ Installation
 ```php bin/magento module:enable Madit_Atos```
 
  [Tutoriel d'installation et de configuration en français](https://www.madit.fr/r/Q1P)
+
+know issues
+============
+It may be, depending on your os, necessary to switch the binaries in ```view/res/atos_standard/bin/static``` by the ones in `alt-static` or the glib dir.
