@@ -69,16 +69,18 @@ class NormalCallback extends Index
         switch ($response['hash']['response_code']) {
             case '00':
                 if ($order->getId()) {
+                    /*
                     $this->checkoutSession->setLastOrderId($order->getId());
                     $this->checkoutSession->setLastQuoteId($order->getQuoteId());
                     $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+                    */
                     $order->addCommentToStatusHistory(_('Customer returned successfully from Atos/Sips payment platform.'))->save();
                     //addStatusHistoryComment(('Customer returned successfully from Atos/Sips payment platform.'))
                      //   ->save();
                 }
                 $curQuote = $this->getCheckoutSession()->getQuote();
                 $curQuote->setIsActive(false);
-                $this->quoteReposity->save($curQuote);
+                $this->quoteRepository->save($curQuote);
 
                 // Set redirect URL
                 $response['redirect_url'] = 'checkout/onepage/success';
