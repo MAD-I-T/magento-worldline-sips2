@@ -140,7 +140,7 @@ class Ipn
         $response = $this->_decodeResponse($data);
 
         if ($this->isDebug) {
-            $this->logger->debug("Poccess auto bank 1" . print_r($response, 1));
+            $this->logger->debug("Poccess auto response" . print_r($response, 1));
         }
         if (!array_key_exists('hash', $response)) {
             $this->_methodInstance->debugResponse('Can\'t retrieve Sips decoded response.');
@@ -247,10 +247,6 @@ class Ipn
     protected function _processOrder()
     {
         // Check response code existence
-
-        if ($this->isDebug) {
-            $this->logger->debug("Poccess auto bank" . print_r($this->_response, 1));
-        }
         if (!array_key_exists('response_code', $this->_response['hash'])) {
             $this->_methodInstance->debugData('No response code found in response data.');
             $this->responseInterface

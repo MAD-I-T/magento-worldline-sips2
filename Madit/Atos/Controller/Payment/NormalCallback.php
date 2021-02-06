@@ -6,9 +6,6 @@ use Madit\Atos\Model\Api\Request;
 use Madit\Atos\Model\Api\Response;
 use Madit\EdiSync\Helper\Data;
 
-use Magento\Framework\App\CsrfAwareActionInterface;
-use Magento\Framework\App\Request\InvalidRequestException;
-use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 class NormalCallback extends Index
@@ -27,8 +24,6 @@ class NormalCallback extends Index
             $this->getAtosSession()->setRedirectMessage(('An error occured: no data received.'));
             // Log error
             $errorMessage = __('Customer #%1 returned successfully from Atos/Sips payment platform but no data received for order #%2.', $this->getCustomerSession()->getCustomerId(), $this->getCheckoutSession()->getLastRealOrder()->getId());
-
-
 
             //echo "<pre> request: print_r($_REQUEST, 1)</pre>";
             $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
@@ -68,16 +63,22 @@ class NormalCallback extends Index
 
         switch ($response['hash']['response_code']) {
             case '00':
+                $curQuote = $this->getCheckoutSession()->getQuote();
+                $curQuote->setIsActive(false);
+                $this->quoteRepository->save($curQuote);
                 if ($order->getId()) {
-                    /*
-                    $this->checkoutSession->setLastOrderId($order->getId());
-                    $this->checkoutSession->setLastQuoteId($order->getQuoteId());
-                    $this->checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
-                    */
-                    $order->addCommentToStatusHistory(_('Customer returned successfully from Atos/Sips payment platform.'))->save();
+                    $checkoutSession  = $this->getCheckoutSession();
+                    $checkoutSession->setLastOrderId($order->getId());
+                    $checkoutSession->setLastQuoteId($order->getQuoteId());
+                    $checkoutSession->setLastSuccessQuoteId($order->getQuoteId());
+
+                    $order->addCommentToStatusHistory(
+                        _('Customer returned successfully from Atos/Sips payment platform.')
+                    )->save();
                     //addStatusHistoryComment(('Customer returned successfully from Atos/Sips payment platform.'))
                      //   ->save();
                 }
+
                 $curQuote = $this->getCheckoutSession()->getQuote();
                 $curQuote->setIsActive(false);
                 $this->quoteRepository->save($curQuote);
@@ -123,8 +124,9 @@ class NormalCallback extends Index
         // Save Atos/Sips response in session
         $this->getAtosSession()->setResponse($response);
 
-        $this->_redirect($response['redirect_url'], ['_secure' => true]);
+        $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setPath($response['redirect_url']);
+        return $resultRedirect;
+        //$this->_redirect($response['redirect_url'], ['_secure' => true]);
     }
-
-
 }

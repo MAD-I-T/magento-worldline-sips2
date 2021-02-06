@@ -1,15 +1,11 @@
 <?php
 namespace Madit\Atos\Controller\Payment;
-use Madit\Atos\Model\Api\Request;
-use Madit\Atos\Model\Api\Response;
-use Madit\Atos\Model\Config;
-use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Backend\App\Action;
-use Madit\EdiSync\Helper\Data;
-use Magento\Framework\Exception\LocalizedException;
 
 use Madit\Atos\Controller\Index\Index;
+use Madit\Atos\Model\Api\Request;
+
+use Madit\Atos\Model\Api\Response;
+
 class Cancel extends Index
 {
     /**
@@ -23,7 +19,7 @@ class Cancel extends Index
             // Set redirect message
             $this->getAtosSession()->setRedirectMessage(('An error occured: no data received.'));
             // Log error
-            $errorMessage = ('Customer #'.$this->getCustomerSession()->getCustomerId().' returned successfully from Atos/Sips payment platform but no data received for order #'.  $this->getCheckoutSession()->getLastRealOrder()->getId().'' );
+            $errorMessage = ('Customer #' . $this->getCustomerSession()->getCustomerId() . ' returned successfully from Atos/Sips payment platform but no data received for order #' . $this->getCheckoutSession()->getLastRealOrder()->getId() . '');
             $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
             // Redirect
             $this->_redirect('*/*/failure');
@@ -42,7 +38,7 @@ class Cancel extends Index
         // Set redirect message
         $this->getAtosSession()->setRedirectTitle(('Your payment has been rejected'));
         $describedResponse = $this->getApiResponse()->describeResponse($response['hash'], 'array');
-        $this->getAtosSession()->setRedirectMessage(('The payment platform has rejected your transaction with the message: <strong>'.$describedResponse['response_code'].'</strong>.'));
+        $this->getAtosSession()->setRedirectMessage(('The payment platform has rejected your transaction with the message: <strong>' . $describedResponse['response_code'] . '</strong>.'));
 
         // Cancel order
         if ($response['hash']['order_id']) {
@@ -57,7 +53,7 @@ class Cancel extends Index
                     $this->getAtosSession()->setRedirectMessage(__('The payment platform has rejected your transaction with the message: <strong>%1</strong>.', $describedResponse['response_code']));
                 }
             }
-            if ($order->getId()){
+            if ($order->getId()) {
                 if ($order->canCancel()) {
                     try {
                         $order->registerCancellation($message)->save();
@@ -66,7 +62,7 @@ class Cancel extends Index
                     } catch (\Exception $e) {
                         $this->logger->critical($e);
                         $message .= '<br/><br/>';
-                        $message .= ('The order has not been cancelled.'). ' : ' . $e->getMessage();
+                        $message .= ('The order has not been cancelled.') . ' : ' . $e->getMessage();
                         $order->addStatusHistoryComment($message)->save();
                     }
                 } else {
@@ -81,6 +77,9 @@ class Cancel extends Index
 
         // Save Atos/Sips response in session
         $this->getAtosSession()->setResponse($response);
-        $this->_redirect($response['redirect_url'], array('_secure' => true));
+        //$this->_redirect($response['redirect_url'], ['_secure' => true]);
+        $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
+        $resultRedirect->setPath($response['redirect_url']);
+        return $resultRedirect;
     }
 }
