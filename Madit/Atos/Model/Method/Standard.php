@@ -160,13 +160,23 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
                 'orderChannel' => "INTERNET",
                 'orderId' => $this->_getOrderId(),
                 //"secretKey" => $this->getConfig()->getConfigData("secret_key", "atos_standard"),
-                's10TransactionReference' =>  array(
-                    's10TransactionId' => substr($this->_getOrderId(), -6)
-                ),
+
 //   "transactionReference" => "",  // usefull for native WL Sips 2.0 merchantIds.  Merchants migrating from WL Sips 1.0 will provide s10TransactionId instead
                 //"sealAlgorithm" => $this->getConfig()->getConfigData("seal_algorithm", "atos_standard"),
                 //"paysage_json_url" => $this->getConfig()->getConfigData("paysage_json_url", "atos_standard")
             );
+
+            if($sipsVersion == 2){
+
+                $parameters['s10TransactionReference'] =  array(
+                    's10TransactionId' => substr($this->_getOrderId(), -6)
+                );
+            }elseif ($sipsVersion == 3){
+                $curDate =  date('Ydm', time());
+                $parameters['transactionReference'] = $curDate. substr($this->_getOrderId(), -6);
+            }else{
+                $parameters['transactionReference'] = "";
+            }
 
         }
 
@@ -190,7 +200,7 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
             $this->_message = $sips['error'] . '<br />';
 
 
-            if ($sipsVersion == 2) {
+            if ($sipsVersion != 1) {
                 $this->_response = $sips['output'];
             }else{
                 $this->_response = $sips['message'];

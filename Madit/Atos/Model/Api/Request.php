@@ -33,7 +33,7 @@ class Request
         $sips_result ="";
         $sips_values = "";
         $paysageJsonUrl = "";
-        if($sipsVersion == 2){
+        if($sipsVersion != 1){
 
 
             $secretKey = $this->_config->getconfigdata("secret_key", "atos_standard");

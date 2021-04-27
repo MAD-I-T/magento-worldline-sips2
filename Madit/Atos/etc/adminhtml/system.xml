@@ -38,34 +38,34 @@
         <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
           <label>Title</label>
         </field>
-        <field id="sips_version" sortOrder="21" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>SIPS Version</label>
-          <source_model>Madit\Atos\Model\System\Config\Source\SIPSVersions</source_model>
-        </field>
-        <field id="merchant_id" translate="label" type="text" sortOrder="22" showInDefault="1" showInWebsite="1" showInStore="1" >
+        <field id="merchant_id" translate="label" type="text" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1" >
           <label>Merchant ID</label>
           <comment>Identifiant marchant</comment>
+        </field>
+        <field id="sips_version" sortOrder="22" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+          <label>SIPS Version</label>
+          <source_model>Madit\Atos\Model\System\Config\Source\SIPSVersions</source_model>
         </field>
         <field id="secret_key" translate="label" type="obscure" sortOrder="23" showInDefault="1" showInWebsite="1" showInStore="1" >
           <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
           <label>Secret key</label>
           <comment>La clé secrète</comment>
           <depends>
-            <field id="sips_version">2</field>
+            <field id="sips_version" separator=",">2,3,4</field>
           </depends>
         </field>
         <field id="secret_key_version" translate="label" type="text" sortOrder="24" showInDefault="1" showInWebsite="1" showInStore="1" >
           <label>Key version</label>
           <comment>La version de la clé</comment>
           <depends>
-            <field id="sips_version">2</field>
+            <field id="sips_version" separator=",">2,3,4</field>
           </depends>
         </field>
         <field id="seal_algorithm" sortOrder="25" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
           <label>Seal_algorithm</label>
           <source_model>Madit\Atos\Model\System\Config\Source\SealAlgorithmVersions</source_model>
           <depends>
-            <field id="sips_version">2</field>
+            <field id="sips_version" separator=",">2,3,4</field>
           </depends>
         </field>
         <field id="order_status" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
