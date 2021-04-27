@@ -17,7 +17,7 @@ However, it is strongly recommended to proceed with the migration as soon as pos
 
 ## Instructions for SIPS v2.0
 As display on the screenshot above, merchant using the v 2.0 of the API can discard the instructions for v1.0 setup.
-They will only require the merchant_id and the secret_key associated to have the module working.
+They will only require the `merchant_id` and the `secret_key` associated to have the module working.
 Also, special attention should be paid to the SIPS version setting in the backoffice:
  - **SIPS 1.0**, to use the SIPS version 1 protocol
  - **SIPS 2.0 (migration)** for merchants who have migrated from v 1.0 to v 2.0 interface keeping their merchant_id
