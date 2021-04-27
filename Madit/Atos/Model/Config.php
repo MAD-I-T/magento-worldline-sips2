@@ -273,6 +273,32 @@ class Config extends \Magento\Framework\DataObject
     }
 
     /**
+     * Get Worldline Seal algorithm
+     *
+     * @return array
+     */
+    public function getSealAlgorithmOptions(): array
+    {
+        return [
+            "HMAC-SHA-256" => "HMAC-SHA-256",
+            "SHA-256" => "SHA-256"
+        ];
+    }
+
+    /**
+     * Get Worldline SIPS version
+     *
+     * @return array
+     */
+    public function getSIPSVersionOptions(): array
+    {
+        return [
+            1 => "SIPS 1.0",
+            2 => "SIPS 2.0"
+        ];
+    }
+
+    /**
      * Get Atos/Sips keywords data field
      *
      * @return array

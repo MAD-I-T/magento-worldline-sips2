@@ -33,7 +33,16 @@ class Standard extends Template
         } else {
             // Active debug in pathfile
             $html .= $method->getSystemMessage();
-            $html .= $method->getSystemResponse();
+            $response = $method->getSystemResponse();
+            if (is_array($response)) {
+                $html .= "<form id = 'form' method = 'POST' action = '". $response['redirectionUrl']
+                    ."'><input type = 'hidden' name ='redirectionVersion' value = '". $response['redirectionVersion']
+                    ."'/><input type = 'hidden' name = 'redirectionData' value = '". $response['redirectionData']
+                    ."'/></form><script type='text/javascript'>document.getElementById('form').submit();</script>";
+            }
+            else{
+                $html .= $method->getSystemResponse();
+            }
         }
         return $html;
 

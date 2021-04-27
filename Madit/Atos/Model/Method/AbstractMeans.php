@@ -26,6 +26,7 @@ abstract class AbstractMeans extends Adapter
     protected $_isOffline = true;
 
     protected $_response = null;
+    protected $_responseArray = null;
     protected $_requestApi;
     protected $_message = null;
     protected $_error = false;
@@ -162,7 +163,7 @@ abstract class AbstractMeans extends Adapter
     /**
      * Get system response
      *
-     * @return string
+     * @return array|string|null
      */
     public function getSystemResponse()
     {
@@ -196,8 +197,11 @@ abstract class AbstractMeans extends Adapter
      */
     public function getConfig()
     {
+
+
         if (empty($this->_config)) {
             $this->_config = $this->config->initMethod($this->_code);
+
         }
         return $this->_config;
     }

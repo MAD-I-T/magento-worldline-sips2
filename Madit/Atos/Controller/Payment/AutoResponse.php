@@ -103,7 +103,8 @@ class AutoResponse extends Index
      */
     public function execute()
     {
-        if (!array_key_exists('DATA', $_REQUEST)) {
+        $options = [];
+        if (!(array_key_exists('DATA', $_REQUEST) || array_key_exists('Data', $_REQUEST))) {
             // Log error
             $errorMessage = __('Automatic response received but no data received for order #%1.', $this->getCheckoutSession()->getLastRealOrderId());
             $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
@@ -111,7 +112,15 @@ class AutoResponse extends Index
             return;
         }
 
-        $this->ipnService->processIpnResponse($_REQUEST['DATA'], $this->getMethodInstance());
+        if(array_key_exists('Seal', $_REQUEST)) {
+            $options['Seal'] = $_REQUEST['Seal'];
+            $options['Data'] = $_REQUEST['Data'];
+            $options['Encode'] = $_REQUEST['Encode'];
+            $options['InterfaceVersion'] = $_REQUEST['InterfaceVersion'];
+            $this->ipnService->processIpnResponse($_REQUEST['Data'], $this->getMethodInstance(), $options);
+        }else {
+            $this->ipnService->processIpnResponse($_REQUEST['DATA'], $this->getMethodInstance());
+        }
     }
 
 }

@@ -4,9 +4,29 @@ namespace Madit\Atos\Model\Api;
 class Response
 {
 
+    /**
+     * @var SIPS2\Utils
+     */
+    protected $_utils;
 
+
+    /**
+     * @var \Madit\Atos\Model\Config
+     */
+    protected $_config;
+
+    /**
+     * Response constructor.
+     * @param SIPS2\Utils $utils
+     * @param \Madit\Atos\Model\Config $config
+     */
     public function __construct(
+
+        \Madit\Atos\Model\Api\SIPS2\Utils $utils,
+        \Madit\Atos\Model\Config $config
     ) {
+        $this->_utils = $utils;
+        $this->_config = $config;
     }
 
     public function doResponse($data, $parameters)
@@ -83,6 +103,90 @@ class Response
         );
     }
 
+
+    public function doResponsev2($data, $parameters)
+    {
+
+        $sipsResponse = null;
+        $seal = $parameters['Seal'];
+        $encoding = $parameters['Encode'];
+
+
+        $paysageJsonUrl = $this->_config->getConfigData("paysage_json_url", "atos_standard");
+        $secretKey = $this->_config->getConfigData("secret_key", "atos_standard");
+        $sealAlgorithm = $this->_config->getConfigData("seal_algorithm", "atos_standard");
+        $calculatedResponseSeal = $this->_utils->computePaymentResponseSeal(
+            $sealAlgorithm,
+            $data,
+            $secretKey
+        );
+
+
+        if(strcmp($calculatedResponseSeal, $seal) == 0){
+            if(strcmp($encoding, "base64") == 0){
+                $dataDecode = base64_decode($data);
+                $sipsResponse = $this->_utils->extractDataFromThePaymentResponse($dataDecode);
+            }else{
+                $sipsResponse = $this->_utils->extractDataFromThePaymentResponse($data);
+            }
+
+        }
+
+
+        $hash = array();
+        if(!empty($sipsResponse)) {
+            $hash['code'] = $sipsResponse['responseCode'];
+            $hash['error'] = $sipsResponse['responseCode'] !== 0 ? $sipsResponse['responseCode'] : '';
+            $hash['merchant_id'] = $sipsResponse['merchantId'] ?? '';
+            $hash['merchant_country'] = 'Unavailable in SIPS v2'; //$sipsResponse['issuerCountryCode'];
+            $hash['amount'] = $sipsResponse['amount'] ?? '';
+            $hash['transaction_id'] = $sipsResponse['s10TransactionId'] ?? substr($sipsResponse['transactionReference'], -6);
+            $hash['payment_means'] = $sipsResponse['paymentMeanBrand'] ?? '';
+            $hash['transmission_date'] = $sipsResponse['s10TransactionIdDate'] ?? '';
+            $hash['payment_time'] = $sipsResponse['transactionDateTime'] ?? '';
+            $hash['payment_date'] = $sipsResponse['s10TransactionIdDate'] ?? $sipsResponse['transactionDateTime'];
+            $hash['response_code'] = $sipsResponse['responseCode'] ?? '';
+            $hash['authorisation_id'] = $sipsResponse['authorisationId'] ?? '';
+            $hash['currency_code'] = $sipsResponse['currencyCode'] ?? '';
+            $hash['card_number'] = $sipsResponse['maskedPan'] ?? '';
+            $hash['is_sips_2'] = 'yes';
+            $hash['cvv_flag'] = $sipsResponse['cardCSCPresence'] ?? '';
+            $hash['cvv_response_code'] = $sipsResponse['cardCSCResultCode'] ?? ''; //$sipsResponse[''];
+            $hash['bank_response_code'] = $sipsResponse['acquirerResponseCode'] ?? ''; //$sipsResponse[''];
+            $hash['complementary_code'] = $sipsResponse['complementaryCode'] ?? '';
+            $hash['complementary_info'] = $sipsResponse['complementaryInfo'] ?? '';
+            $hash['return_context'] = $sipsResponse['returnContext'] ?? '';
+            //$hash['caddie'] = $sipsResponse['caddie'] ?? ''; // unavailable with NO_RESPONSE_PAGE
+            $hash['receipt_complement'] = $sipsResponse['receiptComplement'] ?? '';
+            $hash['merchant_language'] = $sipsResponse['merchantLanguage'] ?? ''; // unavailable with NO_RESPONSE_PAGE
+            $hash['language'] = $sipsResponse['language'] ?? '';
+            $hash['customer_id'] = $sipsResponse['customerId'] ?? ''; //$sipsResponse['customerLegalId'] ; // unavailable with NO_RESPONSE_PAGE
+            $hash['order_id'] = $sipsResponse['orderId'] ?? '100' . $sipsResponse['s10TransactionId'];
+            $hash['customer_email'] = $sipsResponse['customerEmail'] ?? ''; // unavailable with NO_RESPONSE_PAGE
+            $hash['customer_ip_address'] = $sipsResponse['customerIpAddress'] ?? ''; // unavailable with NO_RESPONSE_PAGE
+            $hash['capture_day'] = $sipsResponse['captureDay'] ?? 0;
+            $hash['capture_mode'] = $sipsResponse['captureMode'] ?? '';
+            $hash['data'] = $sipsResponse['data'] ?? '';
+            $hash['order_validity'] = $sipsResponse['orderValidity'] ?? '';
+            $hash['transaction_condition'] = $sipsResponse['holderAuthentStatus'] ?? '';
+            $hash['statement_reference'] = $sipsResponse['statementReference'] ?? '';
+            $hash['card_validity'] = $sipsResponse['panExpiryDate'] ?? '';
+            $hash['score_value'] = $sipsResponse['scoreValue'] ?? '';
+            $hash['score_color'] = $sipsResponse['scoreColor'] ?? '';
+            $hash['score_info'] = $sipsResponse['scoreInfo'] ?? '';
+            $hash['score_threshold'] = $sipsResponse['scoreThreshold'] ?? '';
+            $hash['score_profile'] = $sipsResponse['scoreProfile'] ?? '';
+        }
+
+        return array(
+            'command' => $paysageJsonUrl,
+            'output' => $sipsResponse,
+            'atos_server_ip_adresses' => $this->getAtosServerIpAddresses(),
+            'hash' => $hash
+        );
+
+    }
+
     /**
      *  Return Atos payment server IP addresses
      *
@@ -132,10 +236,14 @@ class Response
 
         // Credit card number
         if (isset($response['card_number']) && !empty($response['card_number'])) {
-            $cc = explode('.', $response['card_number']);
-            $array['card_number'] = $cc[0] . ' #### #### ##' . $cc[1];
+            if(array_key_exists('is_sips_2', $response)){
+                $string .= __('Card number: %1', $response['card_number']) . "<br />";
+            }else {
+                $cc = explode('.', $response['card_number']);
+                $array['card_number'] = $cc[0] . ' #### #### ##' . $cc[1];
 
-            $string.= __('Card number: %1', $array['card_number']) . "<br />";
+                $string .= __('Card number: %1', $array['card_number']) . "<br />";
+            }
         }
 
         if (isset($response['cvv_flag'])) {
@@ -315,6 +423,8 @@ class Response
                     case '99':
                         $array['bank_response_code'] = __('Initiator domain incident');
                         break;
+                    default:
+                        $array['bank_response_code'] = __('None');
                 }
 
                 if (isset($array['bank_response_code'])) {

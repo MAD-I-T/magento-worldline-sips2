@@ -18,7 +18,7 @@ class NormalCallback extends Index
      */
     public function execute()
     {
-        if (!array_key_exists('DATA', $_REQUEST)) {
+        if (!(array_key_exists('DATA', $_REQUEST) || array_key_exists('Data', $_REQUEST))) {
 
             // Set redirect message
             $this->getAtosSession()->setRedirectMessage(('An error occured: no data received.'));
@@ -26,7 +26,8 @@ class NormalCallback extends Index
             $errorMessage = __('Customer #%1 returned successfully from Atos/Sips payment platform but no data received for order #%2.', $this->getCustomerSession()->getCustomerId(), $this->getCheckoutSession()->getLastRealOrder()->getId());
 
             //echo "<pre> request: print_r($_REQUEST, 1)</pre>";
-            $this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
+            $this->logger->critical($errorMessage);
+            //$this->atosHelper->logError(get_class($this), __FUNCTION__, $errorMessage);
 
             // Redirect
             $this->_redirect('*/*/failure');
@@ -34,14 +35,32 @@ class NormalCallback extends Index
         }
 
         // Get Sips Server Response
-        $response = $this->_getAtosResponse($_REQUEST['DATA']);
+        $response = [];
+
+        if(array_key_exists('Seal', $_REQUEST)) {
+            $options['Seal'] = $_REQUEST['Seal'];
+            $options['Data'] = $_REQUEST['Data'];
+            $options['Encode'] = $_REQUEST['Encode'];
+            $options['InterfaceVersion'] = $_REQUEST['InterfaceVersion'];
+            $response = $this->_getAtosResponse($_REQUEST['Data'], $options);
+        }else {
+
+            //echo $this->_code."cur config". print_r(, 1);
+            $this->getConfig()->initMethod('atos_standard');
+            $response = $this->_getAtosResponse($_REQUEST['DATA']);
+        }
 
         //echo var_dump($_REQUEST['DATA']);
         //$this->logger->debug(var_dump($_REQUEST['DATA']));
 
         //$this->atosHelper->logError(get_class($this), __FUNCTION__, $response['hash']);
         // Debug
-        $this->getMethodInstance()->debugResponse($response['hash'], 'Normal');
+
+        $isDebug = $this->getMethodInstance()->getConfigData("debug");
+
+        if($isDebug) {
+            $this->getMethodInstance()->debugResponse($response['hash'], 'Normal');
+        }
 
         // Check if merchant ID matches
         if ($response['hash']['merchant_id'] != $this->getconfig()->getMerchantId()) {
@@ -110,12 +129,12 @@ class NormalCallback extends Index
                     }
 
                     // Refill cart
-                    $this->atosHelper->reorder($response['hash']['order_id']);
+                    //$this->atosHelper->reorder($response['hash']['order_id']);
                 }
                 // Set redirect message
                 $this->getAtosSession()->setRedirectTitle(('Your payment has been rejected'));
                 $describedResponse = $this->getApiResponse()->describeResponse($response['hash'], 'array');
-                $this->getAtosSession()->setRedirectMessage(__('The payment platform has rejected your transaction with the message: <strong>%1</strong>, because the bank send the error: <strong>%2</strong>.', $describedResponse['response_code'], $describedResponse['bank_response_code']));
+                $this->getAtosSession()->setRedirectMessage(__('The payment platform has rejected your transaction with the message: <strong>%1</strong>, because the bank send the error: <strong>%2</strong>.', $describedResponse['response_code'], $describedResponse['bank_response_code'] ?? 'None'));
                 // Set redirect URL
                 $response['redirect_url'] = '*/*/failure';
                 break;

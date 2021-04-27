@@ -2,7 +2,7 @@
 
 namespace Madit\Atos\Model\System\Config\Source;
 
-class PaymentActions implements \Magento\Framework\Data\OptionSourceInterface
+class SIPSVersions implements \Magento\Framework\Data\OptionSourceInterface
 {
 
     /**
@@ -28,6 +28,7 @@ class PaymentActions implements \Magento\Framework\Data\OptionSourceInterface
     public function toOptionArray(): array
     {
         $configModel = $this->atosConfig;
-        return $configModel->getPaymentActions();
+        return $configModel->getSIPSVersionOptions();
     }
 }
+

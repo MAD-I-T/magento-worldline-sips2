@@ -129,15 +129,16 @@ class Ipn
      * @param string $data
      * @param \Madit\Atos\Model\Method\AbstractMeans $methodInstance
      */
-    public function processIpnResponse($data, $methodInstance)
+    public function processIpnResponse($data, $methodInstance, $options = null)
     {
         // Init instance
         $this->_methodInstance = $methodInstance;
         $this->_config = $this->_methodInstance->getConfig();
         $this->isDebug = $this->_methodInstance->getConfigData("debug");
 
+        $response = [];
         // Decode Sips Server Response
-        $response = $this->_decodeResponse($data);
+        $response = $this->_decodeResponse($data, $options);
 
         if ($this->isDebug) {
             $this->logger->debug("Poccess auto response" . print_r($response, 1));
@@ -171,12 +172,16 @@ class Ipn
      * @param string $response
      * @return array
      */
-    protected function _decodeResponse($response)
+    protected function _decodeResponse(string $response, $options = null)
     {
-        $this->_response = $this->_api->doResponse($response, [
-            'bin_response' => $this->_config->getBinResponse(),
-            'pathfile' => $this->_config->getPathfile()
-        ]);
+        if($options == null) {
+            $this->_response = $this->_api->doResponse($response, [
+                'bin_response' => $this->_config->getBinResponse(),
+                'pathfile' => $this->_config->getPathfile()
+            ]);
+        }else{
+            $this->_response = $this->_api->doResponsev2($response, $options);
+        }
 
         return $this->_response;
     }

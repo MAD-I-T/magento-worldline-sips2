@@ -108,46 +108,78 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
      */
     public function callRequest()
     {
-        // Affectation des paramètres obligatoires
-        $parameters = "merchant_id=" . $this->getConfig()->getMerchantId();
-        $parameters .= " merchant_country=" . $this->getConfig()->getMerchantCountry();
-        $parameters .= " amount=" . $this->_getAmount();
-        $parameters .= " currency_code=" . $this->getConfig()->getCurrencyCode($this->_getQuote()->getQuoteCurrencyCode());
+        $parameters = "";
 
-        // Initialisation du chemin du fichier pathfile
-        $parameters .= " pathfile=" . $this->getConfig()->getPathfile();
+        $binPath = "";
 
-        // Affectation dynamique des autres paramètres
-        $parameters .= " normal_return_url=" . $this->_getNormalReturnUrl();
-        $parameters .= " cancel_return_url=" . $this->_getCancelReturnUrl();
-        $parameters .= " automatic_response_url=" . $this->_getAutomaticResponseUrl();
-        $parameters .= " language=" . $this->getConfig()->getLanguageCode();
-        $parameters .= " payment_means=" . $this->_getPaymentMeans();
+        $sipsVersion = $this->getConfig()->getConfigData("sips_version", "atos_standard");
 
-        if ($this->_getCaptureDay() > 0) {
-            $parameters .= " capture_day=" . $this->_getCaptureDay();
+
+        if ($sipsVersion == 1){
+            $parameters .= "merchant_id=" . $this->getConfig()->getMerchantId();
+            $parameters .= " merchant_country=" . $this->getConfig()->getMerchantCountry();
+            $parameters .= " amount=" . $this->_getAmount();
+            $parameters .= " currency_code=" . $this->getConfig()->getCurrencyCode($this->_getQuote()->getQuoteCurrencyCode());
+
+            $parameters .= " pathfile=" . $this->getConfig()->getPathfile();
+
+            $parameters .= " normal_return_url=" . $this->_getNormalReturnUrl();
+            $parameters .= " cancel_return_url=" . $this->_getCancelReturnUrl();
+            $parameters .= " automatic_response_url=" . $this->_getAutomaticResponseUrl();
+            $parameters .= " language=" . $this->getConfig()->getLanguageCode();
+            $parameters .= " payment_means=" . $this->_getPaymentMeans();
+
+            if ($this->_getCaptureDay() > 0) {
+                $parameters .= " capture_day=" . $this->_getCaptureDay();
+            }
+
+            $parameters .= " capture_mode=" . $this->_getCaptureMode();
+            $parameters .= " customer_id=" . $this->_getCustomerId();
+            $parameters .= " customer_email=" . $this->_getCustomerEmail();
+            $parameters .= " customer_ip_address=" . $this->_getCustomerIpAddress();
+            $parameters .= " data=" . str_replace(',', '\;', $this->getConfig()->getSelectedDataFieldKeys());
+            $parameters .= " order_id=" . $this->_getOrderId();
+
+            $binPath = $this->getConfig()->getBinRequest();
         }
+        else{
+           // echo 'currency code'.print_r( $this->getConfig()->getCurrencyCode($this->_getQuote()->getQuoteCurrencyCode()), 1)."\n";
+            $parameters = array(
 
-        $parameters .= " capture_mode=" . $this->_getCaptureMode();
-        $parameters .= " customer_id=" . $this->_getCustomerId();
-        $parameters .= " customer_email=" . $this->_getCustomerEmail();
-        $parameters .= " customer_ip_address=" . $this->_getCustomerIpAddress();
-        $parameters .= " data=" . str_replace(',', '\;', $this->getConfig()->getSelectedDataFieldKeys());
-        $parameters .= " order_id=" . $this->_getOrderId();
+                'amount' => $this->_getAmount(),             //Note that the amount entered in the "amount" field is in cents
+                'automaticResponseUrl' => $this->_getAutomaticResponseUrl(),
+                'currencyCode' => "978",
+                'captureMode' => $this->_getCaptureMode(),
+                'captureDay' => $this->_getCaptureDay(),
+                'customerId' => $this->_getCustomerId(),
+                'customerEmail' => $this->_getCustomerEmail(),
+                'interfaceVersion' => "IR_WS_2.20",
+                //"keyVersion" => $this->getConfig()->getConfigData("secret_key_version", "atos_standard"),
+                'merchantId' => $this->getConfig()->getMerchantId(),
+                'normalReturnUrl' => $this->_getNormalReturnUrl(),
+                'orderChannel' => "INTERNET",
+                'orderId' => $this->_getOrderId(),
+                //"secretKey" => $this->getConfig()->getConfigData("secret_key", "atos_standard"),
+                's10TransactionReference' =>  array(
+                    's10TransactionId' => substr($this->_getOrderId(), -6)
+                ),
+//   "transactionReference" => "",  // usefull for native WL Sips 2.0 merchantIds.  Merchants migrating from WL Sips 1.0 will provide s10TransactionId instead
+                //"sealAlgorithm" => $this->getConfig()->getConfigData("seal_algorithm", "atos_standard"),
+                //"paysage_json_url" => $this->getConfig()->getConfigData("paysage_json_url", "atos_standard")
+            );
 
-        // Initialisation du chemin de l'executable request
-        $binPath = $this->getConfig()->getBinRequest();
+        }
 
         // Debug
         if ($this->getConfigData('debug')) {
             $this->debugRequest($parameters);
         }
 
-        $sips = $this->getApiRequest()->doRequest($parameters, $binPath);
+        $sips = $this->getApiRequest()->doRequest($parameters, $binPath, $sipsVersion);
 
         //echo var_dump($sips, $sips['code']);
         //die(print_r($parameters));
-        if (($sips['code'] == "") && ($sips['error'] == "")) {
+        if (($sips['code'] === "") && ($sips['error'] === "")) {
             $this->_error = true;
             $this->_message = __('<br /><center>Call request file error</center><br />Executable file request not found (%1)', $binPath);
         } elseif ($sips['code'] != 0) {
@@ -156,7 +188,13 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
         } else {
             // Active debug
             $this->_message = $sips['error'] . '<br />';
-            $this->_response = $sips['message'];
+
+
+            if ($sipsVersion == 2) {
+                $this->_response = $sips['output'];
+            }else{
+                $this->_response = $sips['message'];
+            }
         }
     }
 

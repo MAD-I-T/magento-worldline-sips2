@@ -416,12 +416,18 @@ class Index extends \Magento\Framework\App\Action\Action
     /**
      * Treat Atos/Sips response
      */
-    protected function _getAtosResponse($data)
+    protected function _getAtosResponse($data, $options = null)
     {
-        $response = $this->getApiResponse()->doResponse($data, [
-            'bin_response' => $this->getConfig()->getBinResponse(),
-            'pathfile' => $this->getMethodInstance()->getConfig()->getPathfile()
-        ]);
+        $response = [];
+
+        if($options == null) {
+            $response = $this->getApiResponse()->doResponse($data, [
+                'bin_response' => $this->_config->getBinResponse(),
+                'pathfile' => $this->_config->getPathfile()
+            ]);
+        }else{
+            $response = $this->getApiResponse()->doResponsev2($data, $options);
+        }
 
         //die('Hash code: '.isset($response['hash']['code']).' reponse is: '.print_r($response, 1));
         if (!isset($response['hash']['code'])) {
