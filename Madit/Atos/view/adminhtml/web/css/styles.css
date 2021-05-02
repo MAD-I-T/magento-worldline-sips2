@@ -1,0 +1,8 @@
+.madit-section .button-container {float: right;}
+.madit-section .madit-payment-text { display: inline-block; vertical-align: middle; width: 50%}
+.madit-section .madit-payment-logo {
+    background: url("https://www.madit.fr/web/image/res.company/1/logo?unique=4b04666")  no-repeat 0 0% / 18rem auto;display: inline-block;vertical-align: middle;
+    margin: 0 20px 0 0px;width: 180px;height: 60px;background-repeat: no-repeat, no-repeat, no-repeat;
+}
+
+

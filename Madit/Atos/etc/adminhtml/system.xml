@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
   <system>
     <!--section id="Madit_atos" translate="label">
         <label>Atos/Sips API</label>
@@ -29,100 +30,105 @@
         </group>
     </section-->
     <section id="payment">
-      <group id="atos_standard" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-        <label>Atos/Sips - Standard Payment (CC)</label>
-        <field id="active" translate="label" sortOrder="1" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Enabled</label>
-          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-        </field>
-        <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
-          <label>Title</label>
-        </field>
-        <field id="merchant_id" translate="label" type="text" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1" >
-          <label>Merchant ID</label>
-          <comment>Identifiant marchant</comment>
-        </field>
-        <field id="sips_version" sortOrder="22" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>SIPS Version</label>
-          <source_model>Madit\Atos\Model\System\Config\Source\SIPSVersions</source_model>
-        </field>
-        <field id="secret_key" translate="label" type="obscure" sortOrder="23" showInDefault="1" showInWebsite="1" showInStore="1" >
-          <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-          <label>Secret key</label>
-          <comment>La clé secrète</comment>
-          <depends>
-            <field id="sips_version" separator=",">2,3,4</field>
-          </depends>
-        </field>
-        <field id="secret_key_version" translate="label" type="text" sortOrder="24" showInDefault="1" showInWebsite="1" showInStore="1" >
-          <label>Key version</label>
-          <comment>La version de la clé</comment>
-          <depends>
-            <field id="sips_version" separator=",">2,3,4</field>
-          </depends>
-        </field>
-        <field id="seal_algorithm" sortOrder="25" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Seal_algorithm</label>
-          <source_model>Madit\Atos\Model\System\Config\Source\SealAlgorithmVersions</source_model>
-          <depends>
-            <field id="sips_version" separator=",">2,3,4</field>
-          </depends>
-        </field>
-        <field id="order_status" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
-          <label>New Order Status</label>
-          <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
-        </field>
-        <field id="payment_action" sortOrder="27" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Transaction capture mode</label>
-          <source_model>Madit\Atos\Model\System\Config\Source\PaymentActions</source_model>
-        </field>
-        <field id="capture_day" type="text" sortOrder="28" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Transaction capture day</label>
-          <comment>Must be between 0 and 99</comment>
-        </field>
-        <field id="debug" translate="label comment" sortOrder="29" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Debug</label>
-          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-        </field>
-        <field id="cctypes" translate="label"  type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Credit Card Types</label>
-          <source_model>Madit\Atos\Model\Adminhtml\System\Config\Source\Payment\Cctype</source_model>
-          <can_be_empty>1</can_be_empty>
-        </field>
-        <field id="allowspecific" translate="label"  type="allowspecific" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Payment from Applicable Countries</label>
-          <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
-        </field>
-        <field id="specificcountry" translate="label" type="multiselect" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Payment from Specific Countries</label>
-          <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
-          <can_be_empty>1</can_be_empty>
-        </field>
-        <field id="min_order_total" translate="label" type="text" sortOrder="33" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Minimum Order Total</label>
-        </field>
-        <field id="max_order_total" translate="label" type="text" sortOrder="34" showInDefault="1" showInWebsite="1" showInStore="0">
-          <label>Maximum Order Total</label>
-        </field>
-        <field id="instructions" translate="label" sortOrder="27" showInDefault="1" showInWebsite="1" showInStore="1">
-          <label>Instructions</label>
-        </field>
-        <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
-          <label>Sort Order</label>
-          <frontend_class>validate-number</frontend_class>
-        </field>
-        <field id="paysage_json_url" translate="label" type="text" sortOrder="101" showInDefault="0" showInWebsite="0" showInStore="0">
-          <label>paysage json url</label>
-        </field>
-        <field id="paysage_post_url" translate="label" type="text" sortOrder="102" showInDefault="0" showInWebsite="0" showInStore="0">
-          <label>paysage post url</label>
-        </field>
-        <field id="paysage_office_json_refund_url" translate="label" type="text" sortOrder="103" showInDefault="0" showInWebsite="0" showInStore="0">
-          <label>paysage office json refund url</label>
-        </field>
-        <field id="paysage_office_json_validate_url" translate="label" type="text" sortOrder="104" showInDefault="0" showInWebsite="0" showInStore="0">
-          <label>paysage office json validate url</label>
-        </field>
+      <group id="madit" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+        <comment><![CDATA[<div class="madit-payment-logo"></div><div class="madit-payment-text">Configure payment applications supporting worldline SIPS protocol(i.e Sherlocks of LCL, Sogenactif of Soci&eacute;t&eacute; g&eacute;n&eacuterale...)</div>]]></comment>
+        <fieldset_css>complex madit-section</fieldset_css>
+        <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
+        <group id="atos_standard" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Atos/Sips - Standard Payment (CC)</label>
+          <field id="active" translate="label" sortOrder="1" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Enabled</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+          </field>
+          <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" >
+            <label>Title</label>
+          </field>
+          <field id="merchant_id" translate="label" type="text" sortOrder="21" showInDefault="1" showInWebsite="1" showInStore="1" >
+            <label>Merchant ID</label>
+            <comment>Identifiant marchant</comment>
+          </field>
+          <field id="sips_version" sortOrder="22" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>SIPS Version</label>
+            <source_model>Madit\Atos\Model\System\Config\Source\SIPSVersions</source_model>
+          </field>
+          <field id="secret_key" translate="label" type="obscure" sortOrder="23" showInDefault="1" showInWebsite="1" showInStore="1" >
+            <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+            <label>Secret key</label>
+            <comment>La clé secrète</comment>
+            <depends>
+              <field id="sips_version" separator=",">2,3,4</field>
+            </depends>
+          </field>
+          <field id="secret_key_version" translate="label" type="text" sortOrder="24" showInDefault="1" showInWebsite="1" showInStore="1" >
+            <label>Key version</label>
+            <comment>La version de la clé</comment>
+            <depends>
+              <field id="sips_version" separator=",">2,3,4</field>
+            </depends>
+          </field>
+          <field id="seal_algorithm" sortOrder="25" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Seal_algorithm</label>
+            <source_model>Madit\Atos\Model\System\Config\Source\SealAlgorithmVersions</source_model>
+            <depends>
+              <field id="sips_version" separator=",">2,3,4</field>
+            </depends>
+          </field>
+          <field id="order_status" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
+            <label>New Order Status</label>
+            <source_model>Magento\Sales\Model\Config\Source\Order\Status\NewStatus</source_model>
+          </field>
+          <field id="payment_action" sortOrder="27" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Transaction capture mode</label>
+            <source_model>Madit\Atos\Model\System\Config\Source\PaymentActions</source_model>
+          </field>
+          <field id="capture_day" type="text" sortOrder="28" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Transaction capture day</label>
+            <comment>Must be between 0 and 99</comment>
+          </field>
+          <field id="debug" translate="label comment" sortOrder="29" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Debug</label>
+            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+          </field>
+          <field id="cctypes" translate="label"  type="multiselect" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Credit Card Types</label>
+            <source_model>Madit\Atos\Model\Adminhtml\System\Config\Source\Payment\Cctype</source_model>
+            <can_be_empty>1</can_be_empty>
+          </field>
+          <field id="allowspecific" translate="label"  type="allowspecific" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Payment from Applicable Countries</label>
+            <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+          </field>
+          <field id="specificcountry" translate="label" type="multiselect" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Payment from Specific Countries</label>
+            <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+            <can_be_empty>1</can_be_empty>
+          </field>
+          <field id="min_order_total" translate="label" type="text" sortOrder="33" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Minimum Order Total</label>
+          </field>
+          <field id="max_order_total" translate="label" type="text" sortOrder="34" showInDefault="1" showInWebsite="1" showInStore="0">
+            <label>Maximum Order Total</label>
+          </field>
+          <field id="instructions" translate="label" sortOrder="27" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Instructions</label>
+          </field>
+          <field id="sort_order" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+            <label>Sort Order</label>
+            <frontend_class>validate-number</frontend_class>
+          </field>
+          <field id="paysage_json_url" translate="label" type="text" sortOrder="101" showInDefault="0" showInWebsite="0" showInStore="0">
+            <label>paysage json url</label>
+          </field>
+          <field id="paysage_post_url" translate="label" type="text" sortOrder="102" showInDefault="0" showInWebsite="0" showInStore="0">
+            <label>paysage post url</label>
+          </field>
+          <field id="paysage_office_json_refund_url" translate="label" type="text" sortOrder="103" showInDefault="0" showInWebsite="0" showInStore="0">
+            <label>paysage office json refund url</label>
+          </field>
+          <field id="paysage_office_json_validate_url" translate="label" type="text" sortOrder="104" showInDefault="0" showInWebsite="0" showInStore="0">
+            <label>paysage office json validate url</label>
+          </field>
+        </group>
       </group>
     </section>
   </system>
