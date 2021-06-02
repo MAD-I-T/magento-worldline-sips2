@@ -10,6 +10,10 @@
         </arguments>
     </type>
 
+    <type name="Magento\Framework\Session\SessionStartChecker">
+        <plugin name="session_keeper" type="Madit\Atos\Plugin\SessionKeeper"/>
+    </type>
+
     <type name="Madit\Atos\Model\Method\Standard">
         <arguments>
             <argument name="code" xsi:type="string">atos_standard</argument>
