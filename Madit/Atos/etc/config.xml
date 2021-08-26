@@ -26,5 +26,19 @@
             <paysage_office_json_validate_url><![CDATA[https://office-server.test.sips-services.com/rs-services/v2/cashManagement/validate]]></paysage_office_json_validate_url>
           </atos_standard>
       </payment>
+      <csp>
+        <policies>
+          <storefront>
+            <frame-ancestors>
+              <inline>0</inline>
+            </frame-ancestors>
+          </storefront>
+          <admin>
+            <frame-ancestors>
+              <inline>0</inline>
+            </frame-ancestors>
+          </admin>
+        </policies>
+      </csp>
     </default>
 </config>
