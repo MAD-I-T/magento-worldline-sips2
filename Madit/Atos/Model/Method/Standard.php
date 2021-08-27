@@ -112,7 +112,7 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
 
         $binPath = "";
 
-        $sipsVersion = $this->getConfig()->getConfigData("sips_version", "atos_standard");
+        $sipsVersion = $this->getConfig()->getConfigData("sips_version", "atos_standard/default");
 
 
         if ($sipsVersion == 1){
@@ -181,13 +181,14 @@ class Standard extends \Madit\Atos\Model\Method\AbstractMeans
         }
 
         // Debug
-        if ($this->getConfigData('debug')) {
+        if ($this->getConfigData('debug', 'atos_standard/default')) {
             $this->debugRequest($parameters);
         }
 
+        $this->debugRequest($parameters);
         $sips = $this->getApiRequest()->doRequest($parameters, $binPath, $sipsVersion);
 
-        //echo var_dump($sips, $sips['code']);
+        //echo var_dump($sips, 'version ===>', $sipsVersion );
         //die(print_r($parameters));
         if (($sips['code'] === "") && ($sips['error'] === "")) {
             $this->_error = true;

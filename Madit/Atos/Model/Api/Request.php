@@ -36,14 +36,14 @@ class Request
         if($sipsVersion != 1){
 
 
-            $secretKey = $this->_config->getconfigdata("secret_key", "atos_standard");
-            $sealAlgorithm = $this->_config->getconfigdata("seal_algorithm", "atos_standard");
+            $secretKey = $this->_config->getConfigData("secret_key", "atos_standard/default");
+            $sealAlgorithm = $this->_config->getConfigData("seal_algorithm", "atos_standard/default");
             $parameters['seal'] = $this->utils->computePaymentInitSeal(
                 $sealAlgorithm,
                 $parameters,
                 $secretKey
             );
-            $parameters["keyVersion"] = $this->_config->getConfigData("secret_key_version", "atos_standard");
+            $parameters["keyVersion"] = $this->_config->getConfigData("secret_key_version", "atos_standard/default");
             $parameters["sealAlgorithm"] = $sealAlgorithm;
 
             $requestJson = json_encode($parameters, JSON_UNESCAPED_UNICODE, '512');

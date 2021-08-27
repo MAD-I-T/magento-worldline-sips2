@@ -3,14 +3,15 @@
     <default>
       <payment>
           <atos_standard>
-
             <model>Madit\Atos\Model\Method\Standard</model>
             <title>Atos sip standard</title>
             <sips_version>1</sips_version>
+            <default>
             <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
             <secret_key_version>1</secret_key_version>
             <seal_algorithm>HMAC-SHA-256</seal_algorithm>
             <payment_action>authorize_capture</payment_action>
+            </default>
             <active>1</active>
             <cctypes>CB,VISA,MASTERCARD,AMEX</cctypes>
             <can_use_checkout>1</can_use_checkout>

@@ -33,7 +33,7 @@ class Config extends \Magento\Framework\DataObject
         $this->scopeConfig = $scopeConfig;
         $this->ccType = $ccType;
         $this->storeManager = $storeManager;
-        $this->_merchantId = $this->getConfigData('merchant_id', 'atos_standard');
+        $this->_merchantId = $this->getConfigData('merchant_id', 'atos_standard/default');
         parent::__construct($data);
     }
 

@@ -113,8 +113,8 @@ class Response
 
 
         $paysageJsonUrl = $this->_config->getConfigData("paysage_json_url", "atos_standard");
-        $secretKey = $this->_config->getConfigData("secret_key", "atos_standard");
-        $sealAlgorithm = $this->_config->getConfigData("seal_algorithm", "atos_standard");
+        $secretKey = $this->_config->getConfigData("secret_key", "atos_standard/default");
+        $sealAlgorithm = $this->_config->getConfigData("seal_algorithm", "atos_standard/default");
         $calculatedResponseSeal = $this->_utils->computePaymentResponseSeal(
             $sealAlgorithm,
             $data,

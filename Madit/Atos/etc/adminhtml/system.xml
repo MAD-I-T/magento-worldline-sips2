@@ -30,11 +30,11 @@
         </group>
     </section-->
     <section id="payment">
-      <group id="madit" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
+      <group id="atos_standard" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
         <comment><![CDATA[<div class="madit-payment-logo"></div><div class="madit-payment-text">Configure payment applications supporting worldline SIPS protocol(i.e Sherlocks of LCL, Sogenactif of Soci&eacute;t&eacute; g&eacute;n&eacuterale...)</div>]]></comment>
         <fieldset_css>complex madit-section</fieldset_css>
         <frontend_model>Magento\Paypal\Block\Adminhtml\System\Config\Fieldset\Payment</frontend_model>
-        <group id="atos_standard" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+        <group id="default" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
           <label>Atos/Sips - Standard Payment (CC)</label>
           <field id="active" translate="label" sortOrder="1" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
             <label>Enabled</label>

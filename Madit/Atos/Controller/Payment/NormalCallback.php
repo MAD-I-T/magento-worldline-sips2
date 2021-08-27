@@ -56,7 +56,7 @@ class NormalCallback extends Index
         //$this->atosHelper->logError(get_class($this), __FUNCTION__, $response['hash']);
         // Debug
 
-        $isDebug = $this->getMethodInstance()->getConfigData("debug");
+        $isDebug = $this->getMethodInstance()->getConfigData("debug", 'atos_standard/default');
 
         if($isDebug) {
             $this->getMethodInstance()->debugResponse($response['hash'], 'Normal');
