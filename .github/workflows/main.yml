@@ -1,0 +1,20 @@
+name: m2-actions-sips2-test
+
+on: [push]
+
+jobs:
+  magento2-build:
+    runs-on: self-hosted
+    container: ubuntu
+    name: 'm2 tests & build'
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          submodules: recursive
+      - name: 'phpcs testing'
+        uses: MAD-I-T/magento-actions@master
+        with:
+          php: '7.4'
+          process: 'phpcs-test'
+          extension: 'Madit/Atos'
+          standard: 'Magento2'
