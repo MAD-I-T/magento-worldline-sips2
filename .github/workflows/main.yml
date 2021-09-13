@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   magento2-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: ubuntu
     name: 'm2 tests & build'
     steps:
@@ -17,4 +17,5 @@ jobs:
           php: '7.4'
           process: 'phpcs-test'
           extension: 'Madit/Atos'
+          severity: 10
           standard: 'Magento2'
