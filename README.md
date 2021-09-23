@@ -5,7 +5,7 @@ LCL Sherlock payment gateway for Magento 2
 
 
 
-Tested on Magento 2.1.6 - 2.4.0
+Tested on Magento 2.1.6 - 2.4.0 (***Pro version of the module is available [Here](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***)
 
 
 **The module now supports SIPS 2.0 API since SIPS 1.0 API will no longer be supported by worldline by the end of December 2021 ([more info](https://documentation.sips.worldline.com/en/announcements/end-sips-10.html)).**
