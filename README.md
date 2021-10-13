@@ -15,6 +15,8 @@ However, it is strongly recommended to proceed with the migration as soon as pos
 ![sips2-migration](https://user-images.githubusercontent.com/3765910/116287004-2dc5d080-a790-11eb-8f46-f8226abc2899.png)
  
 
+***Full version of the module is also available [on magento marketplace](https://marketplace.magento.com/madit-sips2.html).***
+
 ## Instructions for SIPS v2.0
 As display on the screenshot above, merchant using the v 2.0 of the API can discard the instructions for v1.0 setup.
 They will only require the `merchant_id` and the `secret_key` associated to have the module working.
