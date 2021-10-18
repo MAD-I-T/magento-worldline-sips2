@@ -3,6 +3,7 @@
 LCL Sherlock payment gateway for Magento 2
 
 
+***Full version of the module is available [on magento marketplace](https://marketplace.magento.com/madit-sips2.html).***
 
 
 Tested on Magento 2.1.6 - 2.4.0 (***Pro version of the module is available [Here](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***)
@@ -15,7 +16,6 @@ However, it is strongly recommended to proceed with the migration as soon as pos
 ![sips2-migration](https://user-images.githubusercontent.com/3765910/116287004-2dc5d080-a790-11eb-8f46-f8226abc2899.png)
  
 
-***Full version of the module is also available [on magento marketplace](https://marketplace.magento.com/madit-sips2.html).***
 
 ## Instructions for SIPS v2.0
 As display on the screenshot above, merchant using the v 2.0 of the API can discard the instructions for v1.0 setup.
