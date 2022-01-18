@@ -3,6 +3,8 @@
 LCL Sherlock payment gateway for Magento 2
 
 
+This module is depracated please see the newest version supporting ***[WL SIPS2 Here](https://github.com/MAD-I-T/magento-worldline-sips2/graphs/traffic)***
+
 ***Full version of the module is available [on magento marketplace](https://marketplace.magento.com/madit-sips2.html).***
 
 
