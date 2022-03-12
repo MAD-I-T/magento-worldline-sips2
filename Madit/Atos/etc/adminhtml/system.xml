@@ -2,33 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
   <system>
-    <!--section id="Madit_atos" translate="label">
-        <label>Atos/Sips API</label>
-        <tab>sales</tab>
-        <resource>Magento_Payment::payment</resource>
-        <group id="config_standard" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
-            <label>Configuration Atos/Sips - Standard</label>
-            <field id="certificate_path" translate="label">
-                <label>Certificate file</label>
-                <source_model>Madit\Atos\Model\System\Config\Source\Certificate</source_model>
-                <comment>The certificate file must be placed in lib/atos/param directory in magento's root folder.</comment>
-            </field>
-            <field id="check_ip_address" translate="label">
-                <label>Check IP address of the payment server</label>
-                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-            </field>
-            <field id="authorized_ips" translate="label">
-                <label>Authorized IPs addresses</label>
-                <frontend_model>Madit\Atos\Block\Adminhtml\System\Config\Form\Field</frontend_model>
-                <backend_model>Magento\Config\Model\Config\Backend\Serialized\ArraySerialized</backend_model>
-            </field>
-            <field id="data_field" translate="label">
-                <label>Display options</label>
-                <comment>See PAGES CUSTOMIZATION GUIDE</comment>
-                <source_model>Madit\Atos\Model\System\Config\Source\Datafield</source_model>
-            </field>
-        </group>
-    </section-->
     <section id="payment">
       <group id="atos_standard" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="0">
         <comment><![CDATA[<div class="madit-payment-logo"></div><div class="madit-payment-text">Configure payment applications supporting worldline SIPS protocol(i.e Sherlocks of LCL, Sogenactif of Soci&eacute;t&eacute; g&eacute;n&eacuterale...)</div>]]></comment>
@@ -55,23 +28,14 @@
             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
             <label>Secret key</label>
             <comment>La clé secrète</comment>
-            <depends>
-              <field id="sips_version" separator=",">2,3,4</field>
-            </depends>
           </field>
           <field id="secret_key_version" translate="label" type="text" sortOrder="24" showInDefault="1" showInWebsite="1" showInStore="1" >
             <label>Key version</label>
             <comment>La version de la clé</comment>
-            <depends>
-              <field id="sips_version" separator=",">2,3,4</field>
-            </depends>
           </field>
           <field id="seal_algorithm" sortOrder="25" type="select" showInDefault="1" showInWebsite="1" showInStore="0">
             <label>Seal_algorithm</label>
             <source_model>Madit\Atos\Model\System\Config\Source\SealAlgorithmVersions</source_model>
-            <depends>
-              <field id="sips_version" separator=",">2,3,4</field>
-            </depends>
           </field>
           <field id="order_status" type="select" sortOrder="26" showInDefault="1" showInWebsite="1" showInStore="0" translate="label">
             <label>New Order Status</label>

@@ -85,7 +85,7 @@ class Request
                 );
             }else{
 
-                $responseArray['redirectionStatusCode'] = 34;
+                $responseArray['redirectionStatusCode'] = $responseArray['redirectionStatusCode'] ?? 34;
                 $errorFieldName =  $responseArray["errorFieldName"] ?? '';
                 echo "error".print_r($responseArray,1);
                 $sips_values = array(
@@ -114,8 +114,11 @@ class Request
         ];
         //echo "SIPS from requests".print_r( $sips,1)."END OF Requests --->";
 
-        if (!isset($sips['code'])) {
-            $this->logger->critical(new \Exception($sips_result));
+
+        if (!isset($sips['code']) || !empty($sips['error'])) {
+
+            $this->logger->critical(new \Exception($requestJson));
+            $this->logger->debug($requestJson);
         }
 
         if ($sips['code'] == '-1') {

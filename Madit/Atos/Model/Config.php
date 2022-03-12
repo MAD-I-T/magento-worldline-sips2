@@ -293,7 +293,7 @@ class Config extends \Magento\Framework\DataObject
     public function getSIPSVersionOptions(): array
     {
         return [
-            1 => "SIPS 1.0",
+            //1 => "SIPS 1.0",
             2 => "SIPS 2.0 (migration)",
             3 => "SIPS 2.0 (transactionReference)",
             4 => "SIPS 2.0 (auto)"
