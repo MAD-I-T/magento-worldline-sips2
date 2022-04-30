@@ -4,7 +4,7 @@ PROJECT_PATH="$(pwd)"
 
 echo "currently in $PROJECT_PATH"
 
-mv ./Madit magento/app/code
+mv Madit magento/app/code/
 
 cd "$PROJECT_PATH/magento"
 
