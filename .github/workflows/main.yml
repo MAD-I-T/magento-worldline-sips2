@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: 'install fresh magento repo'
         if: ${{true}}
-        uses: MAD-I-T/magento-actions@v3.10
+        uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
@@ -22,16 +22,17 @@ jobs:
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'launch magento2 unit test'
-        uses: MAD-I-T/magento-actions@v3.10
+        uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
           process: 'unit-test'
+          unit_test_config: 'dev/tests/unit/phpunit.xml.dist'
           unit_test_subset_path: 'app/code/Madit/Atos/'
           override_settings: 1
 
       - name: 'phpcs testing'
-        uses: MAD-I-T/magento-actions@v3.10
+        uses: MAD-I-T/magento-actions@master
         with:
           override_settings: 1
           process: 'phpcs-test'
