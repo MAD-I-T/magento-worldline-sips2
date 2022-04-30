@@ -1,3 +1,5 @@
+<?php
+
 namespace Madit\Atos\Test\Unit\Block;
 use PHPUnit\Framework\TestCase;
 
