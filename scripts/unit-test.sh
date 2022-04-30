@@ -16,12 +16,11 @@ ls -lath dev/tests/unit/
 
 
 
-echo "$INPUT_UNIT_TEST_CONFIG"
-./vendor/phpunit/phpunit/phpunit "$PROJECT_PATH/magento/app/code/Madit"
+./vendor/phpunit/phpunit/phpunit "$PROJECT_PATH/magento/app/code/Madit/Atos"
+./vendor/phpunit/phpunit/phpunit "$PROJECT_PATH/magento/app/code/Madit/Atos/Test/Unit/Block/DebugTest.php"
 
 
 
-cat "$INPUT_UNIT_TEST_CONFIG"
 
 if [ -n "$INPUT_UNIT_TEST_SUBSET_PATH" ]
 then
