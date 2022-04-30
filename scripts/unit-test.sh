@@ -14,6 +14,8 @@ ls -alth app/code/
 
 ls -lath dev/tests/unit/
 
+cat $INPUT_UNIT_TEST_CONFIG
+
 if [ -n "$INPUT_UNIT_TEST_SUBSET_PATH" ]
 then
   ./vendor/bin/phpunit -c $INPUT_UNIT_TEST_CONFIG "$INPUT_UNIT_TEST_SUBSET_PATH"
