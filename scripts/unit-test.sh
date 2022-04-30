@@ -14,7 +14,13 @@ ls -alth app/code/
 
 ls -lath dev/tests/unit/
 
-  ./vendor/bin/phpunit "$INPUT_UNIT_TEST_SUBSET_PATH"
+
+echo "$INPUT_UNIT_TEST_SUBSET_PATH"
+    ./vendor/bin/phpunit "$PROJECT_PATH/magento/app/code/Madit/Atos/Test/Unit"
+
+echo "$INPUT_UNIT_TEST_CONFIG"
+  ./vendor/bin/phpunit "$PROJECT_PATH/magento/app/code/Madit"
+
 
 
 cat "$INPUT_UNIT_TEST_CONFIG"
