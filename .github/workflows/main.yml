@@ -22,7 +22,7 @@ jobs:
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'launch magento2 unit test'
-        uses: MAD-I-T/magento-actions@v3.10
+        uses: MAD-I-T/magento-actions@v3.10.2
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
