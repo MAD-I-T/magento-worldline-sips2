@@ -17,6 +17,6 @@ jobs:
         with:
           override_settings: 1
           process: 'phpcs-test'
-          extension: 'Madit/Sips2/'
+          extension: 'Madit/Atos/'
           severity: 10
           standard: 'Magento2'
