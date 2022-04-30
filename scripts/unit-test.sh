@@ -12,6 +12,7 @@ cd "$PROJECT_PATH/magento"
 
 ls -alth app/code/
 
+ls -lath dev/tests/unit/
 
 if [ -n "$INPUT_UNIT_TEST_SUBSET_PATH" ]
 then
