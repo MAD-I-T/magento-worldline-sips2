@@ -6,7 +6,7 @@ echo "currently in $PROJECT_PATH"
 ls -alth 
 ls -athl Madit
 
-cp -r Madit magento/app/code/
+mv Madit magento/app/code/Madit/
 
 cd "$PROJECT_PATH/magento"
 
