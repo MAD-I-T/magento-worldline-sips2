@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   magento2-build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container: ubuntu
     name: 'm2 tests & build'
     steps:
@@ -13,6 +13,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+
       - name: 'install fresh magento repo'
         if: ${{true}}
         uses: MAD-I-T/magento-actions@v3.10
