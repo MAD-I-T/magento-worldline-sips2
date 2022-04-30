@@ -5,7 +5,7 @@ class DebugTest extends TestCase
 {
   
     public function testTrue(){
-        $this -> assertTrue(true, true);
+        $this->assertTrue(true, true);
     }
 
 }
