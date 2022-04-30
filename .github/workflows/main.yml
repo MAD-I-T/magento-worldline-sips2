@@ -30,7 +30,6 @@ jobs:
           process: 'unit-test'
           unit_test_config: 'dev/tests/unit/phpunit.xml.dist'
           unit_test_subset_path: 'app/code/Madit/Atos'
-          override_settings: 1
 
       - name: 'phpcs testing'
         uses: MAD-I-T/magento-actions@v3.10
