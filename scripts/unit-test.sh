@@ -8,6 +8,7 @@ mv ./Madit magento/app/code
 
 cd "$PROJECT_PATH/magento"
 
+ls -alth app/code/
 
 
 if [ -n "$INPUT_UNIT_TEST_SUBSET_PATH" ]
