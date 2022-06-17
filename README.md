@@ -1,4 +1,4 @@
-# Magento-Worldline-Sips2
+# Magento-Worldline-Sips2 payment module
 
 Module de paiement atos worldline pour magento de MAD IT
 
@@ -14,11 +14,16 @@ Ce module de payment magento supporte les intégrations bancaires suivantes:
 
 - Webaffaires du crédit du nord.
 
-***La version complète du module est disponible sur [la marketplace magento adobe](https://marketplace.magento.com/madit-sips2.html).***
 
-***Bénéficier d'un discount en achetant directement sur notre site [version discount](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***
+**This module is primarily intended for merchants using gateways abiding by worldline SIPS 2.0 API.**
+Nonetheless, the migration mode will allow merchants coming from [SIPS v1](https://documentation.sips.worldline.com/en/announcements/end-sips-10.html) to switch effortlessly to the new WL SIPS v2.
 
-***Support disponible au travers de notre [**forum**](https://forum.madit.fr/) ou directement sur le [site de l'entreprise](https://www.madit.fr/en_US/contacteznous)***
+<div align="center"><h6>Démo en vidéo</h6>
+  <a href="[https://youtu.be/kRIzj2Vv5zE](https://youtu.be/UtoN8foENPg)"><img src="https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png" alt="démo module de paiment lcl sherlock"></a> 
+</div>
+
+![module-magento-lcl-sherlock](https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png)
+
 
 Sips2 MADIT payment gateway for Magento 2
 
@@ -26,16 +31,8 @@ Sips2 MADIT payment gateway for Magento 2
 ***Pro version of the module is available [on magento marketplace](https://marketplace.magento.com/madit-sips2.html).***
 
 
-Tested on Magento 2.1.6 - 2.4.0 (***Discounted version of the module is available [Here](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***)
+Tested on Magento 2.1.6 - 2.4.X (***Discounted version of the module is available [Here](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***)
 
-
-
-
-**This module is primarily intended for merchants using gateways abiding by worldline SIPS 2.0 API.**
-Nonetheless, the migration mode will allow merchants coming from [SIPS v1](https://documentation.sips.worldline.com/en/announcements/end-sips-10.html) to switch effortlessly to the new WL SIPS v2.
-
-
-![sips2-migration](https://user-images.githubusercontent.com/3765910/116287004-2dc5d080-a790-11eb-8f46-f8226abc2899.png)
 
 
 ## Instructions for SIPS v2.0
@@ -59,6 +56,13 @@ php bin/magento cache:flush
 ```
 
 The module can be configured under *Stores>Configuration>Sales>Payment methods>MADIT*
+
+
+***La version complète du module est disponible sur [la marketplace magento adobe](https://marketplace.magento.com/madit-sips2.html).***
+
+***Bénéficier d'un discount en achetant directement sur notre site [version discount](https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6)***
+
+***Support disponible au travers de notre [**forum**](https://forum.madit.fr/) ou directement sur le [site de l'entreprise](https://www.madit.fr/en_US/contacteznous)***
 
 [Need help? Don't hesitate fill this form](https://www.madit.fr/contacteznous)
 
