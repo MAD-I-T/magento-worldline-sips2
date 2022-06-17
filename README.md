@@ -22,7 +22,6 @@ Nonetheless, the migration mode will allow merchants coming from [SIPS v1](https
   <a href="[https://youtu.be/kRIzj2Vv5zE](https://youtu.be/UtoN8foENPg)"><img src="https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png" alt="démo module de paiment lcl sherlock"></a> 
 </div>
 
-![module-magento-lcl-sherlock](https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png)
 
 
 Sips2 MADIT payment gateway for Magento 2
