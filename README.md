@@ -19,7 +19,7 @@ Ce module de payment magento supporte les intégrations bancaires suivantes:
 Nonetheless, the migration mode will allow merchants coming from [SIPS v1](https://documentation.sips.worldline.com/en/announcements/end-sips-10.html) to switch effortlessly to the new WL SIPS v2.
 
 <div align="center"><h6>Démo en vidéo</h6>
-  <a href="[https://youtu.be/kRIzj2Vv5zE](https://youtu.be/UtoN8foENPg)"><img src="https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png" alt="démo module de paiment lcl sherlock"></a> 
+  <a href="https://youtu.be/UtoN8foENPg"><img src="https://user-images.githubusercontent.com/3765910/174391752-bad6a83e-e610-47b5-98bf-5bfe041c88b1.png" alt="démo module de paiment lcl sherlock"></a> 
 </div>
 
 
