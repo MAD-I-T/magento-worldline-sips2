@@ -1,0 +1,59 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <virtualType name="Madit\Sips2\Model\Session\Storage" type="Magento\Framework\Session\Storage">
+        <arguments>
+            <argument name="namespace" xsi:type="string">sips2</argument>
+        </arguments>
+    </virtualType>
+    <type name="Madit\Sips2\Model\Session">
+        <arguments>
+            <argument name="storage" xsi:type="object">Madit\Sips2\Model\Session\Storage</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Session\SessionStartChecker">
+        <plugin name="session_keeper" type="Madit\Sips2\Plugin\SessionKeeper"/>
+    </type>
+
+    <type name="Madit\Sips2\Model\Method\Standard">
+        <arguments>
+            <argument name="code" xsi:type="string">sips2_standard</argument>
+            <argument name="formBlockType" xsi:type="string">Madit\Sips2\Block\Form\Standard</argument>
+            <argument name="infoBlockType" xsi:type="string">Madit\Sips2\Block\Info\Standard</argument>
+            <argument name="valueHandlerPool" xsi:type="object">Sips2PaymentValueHandlerPool</argument>
+        </arguments>
+    </type>
+
+    <!-- @api create virtual type based on default value handler if it required by payment method -->
+    <virtualType name="Sips2PaymentDefaultValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">MaditSips2GatewayConfig</argument>
+        </arguments>
+    </virtualType>
+    <!-- @api create virtual type based on default value handler pool if it required by payment method -->
+    <virtualType name="Sips2PaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">Sips2PaymentDefaultValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Sips2ValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">Magento\Payment\Gateway\Validator\CountryValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+
+  <virtualType name="MaditSips2GatewayConfig" type="Madit\Sips2\Gateway\Config\Config">
+    <!--virtualType name="MaditSips2GatewayConfig" type="Magento\Payment\Gateway\Config\Config"-->
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Madit\Sips2\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+
+
+</config>

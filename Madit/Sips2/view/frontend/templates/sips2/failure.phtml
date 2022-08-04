@@ -1,0 +1,14 @@
+<?php
+?>
+<div class="page-title">
+    <h1><?=
+        $block->escapeHtml(
+            ($block->getTitle()) ?
+                $block->getTitle() :
+                __('An error occurred during the processing of the payment')
+        ); ?></h1>
+</div>
+<?php if ($block->getMessage()): ?>
+    <p><?= $block->escapeHtml($block->getMessage()); ?></p>
+<?php endif; ?>
+<p><?= $block->escapeHtml(__('<a href=\'/\'>Retour à l\'acceuil</a>.')); ?></p>

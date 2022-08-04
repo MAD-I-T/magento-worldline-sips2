@@ -1,0 +1,18 @@
+{
+	"name": "madit/sips2",
+	"license": "OSL-3.0",
+	"type": "magento2-module",
+	"description": "Worldline SIPS2 integration for Magento",
+	"version": "1.0.0",
+	"require": {
+		"php": "~5.6.5|7.0.2|7.0.4|~7.0.6|7.*|8.*"
+	},
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+        "psr-4": {
+	        "Madit\\Sips2\\": ""
+        }
+	}
+}
