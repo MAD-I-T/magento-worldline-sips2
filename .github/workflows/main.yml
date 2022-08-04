@@ -37,11 +37,12 @@ jobs:
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'phpcs testing'
-        uses: MAD-I-T/magento-actions@v3.10
+        uses: MAD-I-T/magento-actions@master
         with:
+          php: '7.4'
           override_settings: 1
           process: 'phpcs-test'
-          extension: 'Madit/Atos/'
+          extension: 'Madit/Sips2/'
           severity: 10
           standard: 'Magento2'
 
