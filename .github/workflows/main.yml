@@ -46,7 +46,7 @@ jobs:
           severity: 10
           standard: 'Magento2'
 
-			- name: 'launch magento2 unit test'
+      - name: 'launch magento2 unit test'
         uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
