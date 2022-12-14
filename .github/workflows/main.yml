@@ -60,9 +60,13 @@ jobs:
         if: ${{true}}
         uses: MAD-I-T/magento-actions@master
         with:
-          php: '7.4'
-          override_settings: 1
           process: 'phpcs-test'
           extension: 'Madit/Sips2/'
           severity: 10
           standard: 'Magento2'
+
+      - name: 'mess detector'
+        uses: MAD-I-T/magento-actions@master
+        with:
+          process: 'mess-detector'
+          md_src_path: '../Madit/Sips2/'
