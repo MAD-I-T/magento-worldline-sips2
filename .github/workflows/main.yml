@@ -42,7 +42,6 @@ jobs:
           process: 'create-project'
           magento_version: 2.4.5-p1
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
-          
 
       - name: 'launch magento2 unit test'
         if: ${{true}}
@@ -55,6 +54,11 @@ jobs:
           unit_test_subset_path: '../Madit/Sips2'
           elasticsearch: 1
 
+      - name: 'mess detector'
+        uses: MAD-I-T/magento-actions@master
+        with:
+          process: 'mess-detector'
+          md_src_path: '../Madit/Sips2/'
 
       - name: 'phpcs testing'
         if: ${{true}}
@@ -65,8 +69,4 @@ jobs:
           severity: 10
           standard: 'Magento2'
 
-      - name: 'mess detector'
-        uses: MAD-I-T/magento-actions@master
-        with:
-          process: 'mess-detector'
-          md_src_path: '../Madit/Sips2/'
+      
