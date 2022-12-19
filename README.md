@@ -1,6 +1,6 @@
 # Magento-Worldline-Sips2 payment module
 
-Module de paiement atos worldline pour magento de MAD IT -- ***[Complete version here](https://marketplace.magento.com/madit-sips2.html).***
+Module de paiement atos worldline pour magento de MAD IT -- ***[Complete version here](https://www.madit.fr/r/sips2-atos-buy).***
 
 
 Ce module de payment magento supporte les intégrations bancaires suivantes:
