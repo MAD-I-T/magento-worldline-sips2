@@ -34,7 +34,6 @@ jobs:
       #    no_push: 1
 
       - name: 'install fresh magento repo'
-        if: ${{true}}
         uses: MAD-I-T/magento-actions@v3.16
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
@@ -44,7 +43,7 @@ jobs:
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'launch magento2 unit test'
-        if: ${{true}}
+        if: always()
         uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
@@ -55,13 +54,14 @@ jobs:
           elasticsearch: 1
 
       - name: 'mess detector'
+        if: always()
         uses: MAD-I-T/magento-actions@v3.17
         with:
           process: 'mess-detector'
           md_src_path: '../Madit/Sips2/'
 
       - name: 'phpcs testing'
-        if: ${{true}}
+        if: always()
         uses: MAD-I-T/magento-actions@master
         with:
           process: 'phpcs-test'
