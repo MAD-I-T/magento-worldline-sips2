@@ -55,7 +55,7 @@ jobs:
           elasticsearch: 1
 
       - name: 'mess detector'
-        uses: MAD-I-T/magento-actions@master
+        uses: MAD-I-T/magento-actions@v3.17
         with:
           process: 'mess-detector'
           md_src_path: '../Madit/Sips2/'
