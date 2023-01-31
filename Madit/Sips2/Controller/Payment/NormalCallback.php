@@ -6,6 +6,7 @@ use Madit\Sips2\Model\Api\Request;
 use Madit\Sips2\Model\Api\Response;
 use Madit\EdiSync\Helper\Data;
 
+use Madit\Sips2\Model\Config;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 
@@ -13,7 +14,61 @@ class NormalCallback extends Index
 {
 
     /**
-     * Constructor
+     * @var \Magento\Quote\Model\QuoteRepository
+     */
+    protected $quoteRepository;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * NormalCallback constructor.
+     * @param \Madit\Sips2\Model\Api\Response $responseApi
+     * @param \Magento\Customer\Model\Session $customerSession
+     * @param \Madit\Sips2\Model\Session $sips2Session
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Config $config
+     * @param \Madit\Sips2\Model\Method\Standard $standardMethod
+     * @param \Magento\Sales\Model\Order $orderInterface
+     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
+     */
+    public function __construct(
+        \Madit\Sips2\Model\Api\Response $responseApi,
+        \Magento\Customer\Model\Session $customerSession,
+        \Madit\Sips2\Model\Session $sips2Session,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Backend\App\Action\Context $context,
+        \Magento\Framework\View\Result\PageFactory  $resultPageFactory,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Madit\Sips2\Model\Config $config,
+        \Madit\Sips2\Model\Method\Standard $standardMethod,
+        \Magento\Sales\Model\Order $orderInterface,
+        \Magento\Quote\Model\QuoteRepository $quoteRepository
+
+    ) {
+        $this->quoteRepository = $quoteRepository;
+        $this->logger = $logger;
+
+        parent::__construct(
+            $responseApi,
+            $customerSession,
+            $sips2Session,
+            $context,
+            $resultPageFactory,
+            $checkoutSession,
+            $config,
+            $standardMethod,
+            $orderInterface
+        );
+    }
+
+    /**
+     * Execute
      *
      * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface|\Magento\Framework\View\Result\Page|void
      * @throws LocalizedException
@@ -21,9 +76,6 @@ class NormalCallback extends Index
      */
     public function execute()
     {
-        //$dataServ = $this->getRequest();
-        //var_dump($this->getRequest()->getPost()['Data']);
-        //die();
         if (!$this->getRequest()->getPost()['Data']) {
 
             // Set redirect message
@@ -37,9 +89,7 @@ class NormalCallback extends Index
                 $this->getCheckoutSession()->getLastRealOrder()->getId()
             );
 
-            //echo "<pre> request: print_r($_REQUEST, 1)</pre>";
             $this->logger->critical($errorMessage);
-            //$this->sips2Helper->logError(get_class($this), __FUNCTION__, $errorMessage);
 
             // Redirect
             $this->_redirect('*/*/failure');
@@ -58,16 +108,9 @@ class NormalCallback extends Index
             $response = $this->_getSips2Response($requestPostData['Data'], $options);
         } else {
 
-            //echo $this->_code."cur config". print_r(, 1);
             $this->getConfig()->initMethod('sips2_standard');
             $response = $this->_getSips2Response($requestPostData['DATA']);
         }
-
-        //echo var_dump($_REQUEST['DATA']);
-        //$this->logger->debug(var_dump($_REQUEST['DATA']));
-
-        //$this->sips2Helper->logError(get_class($this), __FUNCTION__, $response['hash']);
-        // Debug
 
         $isDebug = $this->getMethodInstance()->getConfigData("debug");
 
@@ -85,7 +128,7 @@ class NormalCallback extends Index
                 $response['hash']['merchant_id'],
                 $this->getConfig()->getMerchantId()
             );
-            $this->sips2Helper->logError(get_class($this), __FUNCTION__, $errorMessage);
+            $this->logger->error(get_class($this) . ' ' .__FUNCTION__. ': ' . $errorMessage);
             // Redirect
             $this->_redirect('*/*/failure');
             return;
@@ -129,7 +172,7 @@ class NormalCallback extends Index
                     $response['hash']['response_code'],
                     $response['hash']['error']
                 );
-                $this->sips2Helper->logError(get_class($this), __FUNCTION__, $errorMessage);
+                $this->logger->error(get_class($this) . ' ' .__FUNCTION__. ': ' . $errorMessage);
                 // Add error on order message, cancel order and reorder
                 if ($order->getId()) {
                     if ($order->canCancel()) {
@@ -149,8 +192,6 @@ class NormalCallback extends Index
                         $order->addStatusHistoryComment($errorMessage)->save();
                     }
 
-                    // Refill cart
-                    //$this->sips2Helper->reorder($response['hash']['order_id']);
                 }
                 // Set redirect message
                 $this->getSips2Session()->setRedirectTitle(('Your payment has been rejected'));
@@ -174,6 +215,5 @@ class NormalCallback extends Index
         $resultRedirect = $this->resultFactory->create(\Magento\Framework\Controller\ResultFactory::TYPE_REDIRECT);
         $resultRedirect->setPath($response['redirect_url']);
         return $resultRedirect;
-        //$this->_redirect($response['redirect_url'], ['_secure' => true]);
     }
 }

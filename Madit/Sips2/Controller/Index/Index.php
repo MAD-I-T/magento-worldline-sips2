@@ -6,7 +6,7 @@ use Madit\Sips2\Model\Api\Response;
 use Madit\Sips2\Model\Config;
 use Magento\Framework\App\ResponseInterface;
 
-class Index extends \Magento\Framework\App\Action\Action
+class Index  extends  \Magento\Framework\App\Action\Action
 {
 
     /**
@@ -14,35 +14,11 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     protected $checkoutSession;
 
-    /**
-     * @var \Magento\Quote\Model\QuoteFactory
-     */
-    protected $quoteFactory;
-
-    /**
-     * @var \Magento\Quote\Model\QuoteRepository
-     */
-    protected $quoteRepository;
-
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    protected $orderInterface;
-
-    /**
-     * @var \Madit\Sips2\Model\Config
-     */
-    protected $_config;
-
-    /**
-     * @var \Madit\Sips2\Model\Api\Request
-     */
-    protected $_requestApi;
-
     /*
-     *  @var \Madit\Sips2\Model\Method\Standard
-     */
+   *  @var \Madit\Sips2\Model\Method\Standard
+   */
     protected $_standardMethod;
+
 
     /* @var \Magento\Customer\Model\Session $customerSession */
     protected $customerSession;
@@ -57,20 +33,18 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     protected $sips2Session;
 
-    /**
-     * @var \Psr\Log\LoggerInterface $logger
-     */
-    protected $logger;
 
     /**
-     * @var \Madit\Sips2\Helper\Data
+     * @var \Madit\Sips2\Model\Config
      */
-    protected $sips2Helper;
+    protected $_config;
+
 
     /**
-     * @var \Madit\Sips2\Model\Ipn $sips2Ipn
+     * @var \Magento\Sales\Model\Order
      */
-    protected $sips2Ipn;
+    protected $orderInterface;
+
 
     /**
      * @var \Magento\Framework\View\Element\BlockFactory
@@ -82,69 +56,38 @@ class Index extends \Magento\Framework\App\Action\Action
 
     /**
      * Index constructor.
-     * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Madit\Sips2\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param Config $config
-     * @param Request $requestApi
      * @param Response $responseApi
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
-     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
-     * @param \Magento\Sales\Model\Order $orderInterface
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Madit\Sips2\Model\Session $sips2Session
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Madit\Sips2\Helper\Data $sips2Helper
-     * @param \Madit\Sips2\Model\Method\Standard $standardMethod
-     * @param \Madit\Sips2\Model\Ipn $sips2Ipn
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Element\BlockFactory $blockFactory
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Config $config
+     * @param \Madit\Sips2\Model\Method\Standard $standardMethod
+     * @param \Magento\Sales\Model\Order $orderInterface
      */
     public function __construct(
-        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Madit\Sips2\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Madit\Sips2\Model\Config $config,
-        \Madit\Sips2\Model\Api\Request $requestApi,
         \Madit\Sips2\Model\Api\Response $responseApi,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Quote\Model\QuoteFactory $quoteFactory,
-        \Magento\Quote\Model\QuoteRepository $quoteRepository,
-        \Magento\Sales\Model\Order $orderInterface,
         \Magento\Customer\Model\Session $customerSession,
         \Madit\Sips2\Model\Session $sips2Session,
-        \Psr\Log\LoggerInterface $logger,
-        \Madit\Sips2\Helper\Data $sips2Helper,
-        \Madit\Sips2\Model\Method\Standard $standardMethod,
-        \Madit\Sips2\Model\Ipn $sips2Ipn,
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Element\BlockFactory $blockFactory,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Madit\Sips2\Model\Config $config,
+        \Madit\Sips2\Model\Method\Standard $standardMethod,
+        \Magento\Sales\Model\Order $orderInterface
+
     ) {
-        $this->moduleDirReader = $moduleDirReader;
-        $this->scopeConfig = $scopeConfig;
-        $this->ccType = $ccType;
-        $this->storeManager = $storeManager;
-        $this->_config = $config;
-        $this->_requestApi = $requestApi;
         $this->_responseApi = $responseApi;
-        $this->checkoutSession = $checkoutSession;
-        $this->quoteFactory = $quoteFactory;
-        $this->quoteRepository = $quoteRepository;
-        $this->orderInterface = $orderInterface;
         $this->customerSession = $customerSession;
         $this->sips2Session = $sips2Session;
-        $this->logger = $logger;
-        $this->sips2Helper = $sips2Helper;
-        $this->_standardMethod = $standardMethod;
-        $this->sips2Ipn = $sips2Ipn;
-        $this->_blockFactory = $blockFactory;
         $this->resultPageFactory = $resultPageFactory;
+        $this->checkoutSession = $checkoutSession;
+        $this->_config = $config;
+        $this->_standardMethod = $standardMethod;
+        $this->orderInterface = $orderInterface;
         parent::__construct($context);
+
     }
 
     /**
@@ -167,6 +110,7 @@ class Index extends \Magento\Framework\App\Action\Action
         return $this->_config;
     }
 
+
     /**
      * Get checkout session
      *
@@ -176,6 +120,7 @@ class Index extends \Magento\Framework\App\Action\Action
     {
         return $this->checkoutSession;
     }
+
 
     /**
      * Get customer session

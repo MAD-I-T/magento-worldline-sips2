@@ -131,9 +131,7 @@ class Response
         $seal = $parameters['Seal'];
         $encoding = $parameters['Encode'];
 
-        $paysageJsonUrl = $this->_config->getConfigData("sips_test_mode") == 1 ?
-            $this->_config->getConfigData("paysage_json_url_test"):
-            $this->_config->getConfigData("paysage_json_url");
+        $paysageJsonUrl = $this->_config->getConfigData("paysage_json_url");
 
         $secretKey = $this->_config->getConfigData("secret_key");
         $sealAlgorithm = $this->_config->getConfigData("seal_algorithm");

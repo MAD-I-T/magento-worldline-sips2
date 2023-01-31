@@ -1,14 +1,12 @@
+
 <?php
 ?>
 <div class="page-title">
-    <h1><?=
-        $block->escapeHtml(
-            ($block->getTitle()) ?
-                $block->getTitle() :
-                __('An error occurred during the processing of the payment')
-        ); ?></h1>
+    <h1><?= __('This is a demo version please by pro version on www.madit.fr'); ?></h1>
+    <a href="https://www.madit.fr/shop/product/worldline-sips2-module-for-magento-2-6"><img src="https://www.madit.fr/r/sips2-logo"></a>
+    <h1><?= ($block->getTitle()) ? $block->getTitle() : __('An error occurred in the process of payment'); ?></h1>
 </div>
 <?php if ($block->getMessage()): ?>
-    <p><?= $block->escapeHtml($block->getMessage()); ?></p>
+    <p><?= $block->getMessage(); ?></p>
 <?php endif; ?>
-<p><?= $block->escapeHtml(__('<a href=\'/\'>Retour à l\'acceuil</a>.')); ?></p>
+<p><a href="/"><?= __("Retour à l\'acceuil.") ?></a></p>

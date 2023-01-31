@@ -8,76 +8,46 @@
 namespace Madit\Sips2\Controller\Payment;
 
 use Madit\Sips2\Controller\Index\Index;
+use Madit\Sips2\Model\Api\Request;
+use Madit\Sips2\Model\Config;
 use Magento\Framework\View\Result\PageFactory;
 
 class Failure extends Index
 {
     /**
      * Failure constructor.
-     * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
-     * @param \Madit\Sips2\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Madit\Sips2\Model\Config $config
-     * @param \Madit\Sips2\Model\Api\Request $requestApi
      * @param \Madit\Sips2\Model\Api\Response $responseApi
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Quote\Model\QuoteFactory $quoteFactory
-     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
-     * @param \Magento\Sales\Model\Order $orderInterface
      * @param \Magento\Customer\Model\Session $customerSession
      * @param \Madit\Sips2\Model\Session $sips2Session
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Madit\Sips2\Helper\Data $sips2Helper
-     * @param \Madit\Sips2\Model\Method\Standard $standardMethod
-     * @param \Madit\Sips2\Model\Ipn $sips2Ipn
      * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\View\Element\BlockFactory $blockFactory
      * @param PageFactory $resultPageFactory
+     * @param \Magento\Checkout\Model\Session $checkoutSession
+     * @param Config $config
+     * @param \Madit\Sips2\Model\Method\Standard $standardMethod
+     * @param \Magento\Sales\Model\Order $orderInterface
      */
     public function __construct(
-        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Madit\Sips2\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Madit\Sips2\Model\Config $config,
-        \Madit\Sips2\Model\Api\Request $requestApi,
         \Madit\Sips2\Model\Api\Response $responseApi,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Quote\Model\QuoteFactory $quoteFactory,
-        \Magento\Quote\Model\QuoteRepository $quoteRepository,
-        \Magento\Sales\Model\Order $orderInterface,
         \Magento\Customer\Model\Session $customerSession,
         \Madit\Sips2\Model\Session $sips2Session,
-        \Psr\Log\LoggerInterface $logger,
-        \Madit\Sips2\Helper\Data $sips2Helper,
-        \Madit\Sips2\Model\Method\Standard $standardMethod,
-        \Madit\Sips2\Model\Ipn $sips2Ipn,
         \Magento\Backend\App\Action\Context $context,
-        \Magento\Framework\View\Element\BlockFactory $blockFactory,
-        PageFactory  $resultPageFactory
+        PageFactory  $resultPageFactory,
+        \Magento\Checkout\Model\Session $checkoutSession,
+        \Madit\Sips2\Model\Config $config,
+        \Madit\Sips2\Model\Method\Standard $standardMethod,
+        \Magento\Sales\Model\Order $orderInterface
     ) {
+
         parent::__construct(
-            $moduleDirReader,
-            $scopeConfig,
-            $ccType,
-            $storeManager,
-            $config,
-            $requestApi,
             $responseApi,
-            $checkoutSession,
-            $quoteFactory,
-            $quoteRepository,
-            $orderInterface,
             $customerSession,
             $sips2Session,
-            $logger,
-            $sips2Helper,
-            $standardMethod,
-            $sips2Ipn,
             $context,
-            $blockFactory,
-            $resultPageFactory
+            $resultPageFactory,
+            $checkoutSession,
+            $config,
+            $standardMethod,
+            $orderInterface
         );
     }
     /**
