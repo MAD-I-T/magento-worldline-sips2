@@ -52,10 +52,16 @@ jobs:
           unit_test_config: 'dev/tests/unit/phpunit.xml.dist'
           unit_test_subset_path: '../Madit/Sips2'
           elasticsearch: 1
-
+          
+      - name: 'phpstan'
+        uses: MAD-I-T/magento-actions@master
+        with:
+          process: 'phpstan'
+          exec_path: '../Madit/Sips2/'
+          
       - name: 'mess detector'
         if: always()
-        uses: MAD-I-T/magento-actions@v3.17
+        uses: MAD-I-T/magento-actions@v3.18
         with:
           process: 'mess-detector'
           md_src_path: '../Madit/Sips2/'
