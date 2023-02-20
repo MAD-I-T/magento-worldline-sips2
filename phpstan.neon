@@ -1,4 +1,2 @@
 parameters:
     level: 1
-    paths:
-      - vendor/magento/module-email
