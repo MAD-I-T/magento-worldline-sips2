@@ -28,7 +28,7 @@ jobs:
           path: Madit_Sips2
 
       - name: 'install fresh magento repo'
-        uses: MAD-I-T/magento-actions@v3.19
+        uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
