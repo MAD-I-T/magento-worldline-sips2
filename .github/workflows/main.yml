@@ -33,7 +33,7 @@ jobs:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
           process: 'create-project'
-          magento_version: 2.4.5-p1
+          magento_version: 2.4.6
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'launch magento2 unit test'
