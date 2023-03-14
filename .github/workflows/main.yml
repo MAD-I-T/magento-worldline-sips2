@@ -32,7 +32,7 @@ jobs:
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
-          process: 'create-project'
+          process: 'install-magento'
           magento_version: 2.4.6
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
