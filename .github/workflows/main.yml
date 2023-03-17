@@ -48,7 +48,8 @@ jobs:
           elasticsearch: 1
           
       - name: 'phpstan'
-        uses: MAD-I-T/magento-actions@v3.19
+        if: always()
+        uses: MAD-I-T/magento-actions@v3.20
         with:
           process: 'phpstan'
           exec_path: '../Madit_Sips2/'
