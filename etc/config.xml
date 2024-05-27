@@ -19,6 +19,7 @@
             <can_capture>0</can_capture>
             <can_initialize>1</can_initialize>
             <allowspecific>0</allowspecific>
+            <group>sips2</group>
             <is_gateway>0</is_gateway>
             <order_status>pending</order_status>
             <sort_order>0</sort_order>
