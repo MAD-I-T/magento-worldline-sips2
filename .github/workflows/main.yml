@@ -29,22 +29,23 @@ jobs:
       #  options: -e="discovery.type=single-node" --health-cmd="curl http://localhost:9200/_cluster/health" --health-interval=10s --health-timeout=5s --health-retries=10
     steps:
       ### Download the third party code in custom dir###
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: Madit_Sips2
 
       - name: 'install fresh magento repo'
-        uses: MAD-I-T/magento-actions@v3.20
+        uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
           process: 'install-magento'
-          magento_version: 2.4.6
+          magento_version: 2.4.7-p3
+          php: 8.3
           no_push: 1   ## add this arg to not push to the repo ideal for quick test on specific version
 
       - name: 'launch magento2 unit test'
         if: always()
-        uses: MAD-I-T/magento-actions@v3.20
+        uses: MAD-I-T/magento-actions@master
         env:
           COMPOSER_AUTH: ${{secrets.COMPOSER_AUTH}}
         with:
@@ -54,22 +55,25 @@ jobs:
           
       - name: 'phpstan'
         if: always()
-        uses: MAD-I-T/magento-actions@v3.20
+        uses: MAD-I-T/magento-actions@master
         with:
           process: 'phpstan'
+          php: 8.3
           exec_path: '../Madit_Sips2/'
           
       - name: 'mess detector'
         if: always()
-        uses: MAD-I-T/magento-actions@v3.20
+        uses: MAD-I-T/magento-actions@master
         with:
           process: 'mess-detector'
+          php: 8.3
           md_src_path: '../Madit_Sips2/'
 
       - name: 'Magento coding standard checking'
         if: always()
-        uses: MAD-I-T/magento-actions@v3.20
+        uses: MAD-I-T/magento-actions@master
         with:
+          php: 8.3
           process: 'phpcs-test'
           extension: 'Madit_Sips2'
           severity: 10
