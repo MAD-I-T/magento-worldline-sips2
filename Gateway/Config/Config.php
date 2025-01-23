@@ -20,6 +20,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     protected $_merchantId;
     protected $scopeConfig;
     protected $ccType;
+    protected $serializer;
     protected $storeManager;
 
     /**

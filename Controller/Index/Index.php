@@ -52,7 +52,7 @@ class Index  extends  \Magento\Framework\App\Action\Action
     protected $_blockFactory;
 
     /** @var \Magento\Framework\View\Result\PageFactory $resultPageFactory **/
-    protected $resultFactory;
+    protected $resultPageFactory;
 
     /**
      * Index constructor.
