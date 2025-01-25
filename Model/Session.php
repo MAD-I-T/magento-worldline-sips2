@@ -37,7 +37,6 @@ class Session extends \Magento\Framework\Session\SessionManager
      * @param \Magento\Framework\Session\StorageInterface $storage
      * @param \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager
      * @param \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory
-     * @param \Magento\Framework\App\Http\Context $httpContext
      * @param \Magento\Framework\App\State $appState
      * @param \Magento\Framework\Session\Generic $session
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
@@ -57,7 +56,6 @@ class Session extends \Magento\Framework\Session\SessionManager
         \Magento\Framework\Session\StorageInterface $storage,
         \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
         \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory,
-        \Magento\Framework\App\Http\Context $httpContext,
         \Magento\Framework\App\State $appState,
         \Magento\Framework\Session\Generic $session,
         \Magento\Framework\Event\ManagerInterface $eventManager,

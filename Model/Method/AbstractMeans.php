@@ -17,9 +17,12 @@ use Magento\Sales\Model\Order;
 
 abstract class AbstractMeans extends Adapter
 {
+
+    protected $_code = null;
     protected $_isOffline = true;
 
     protected $_response = null;
+    protected $_redirectBlockType = null;
     protected $_responseArray = null;
     protected $_requestApi;
     protected $_message = null;

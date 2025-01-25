@@ -92,13 +92,9 @@ class Ipn
 
     /**
      * Ipn constructor.
-     * @param \Magento\Framework\Module\Dir\Reader $moduleDirReader
      * @param Config $config
      * @param Api\Response $responseApi
-     * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Psr\Log\LoggerInterface $logger
-     * @param Adminhtml\System\Config\Source\Payment\Cctype $ccType
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Framework\App\ResponseInterface $responseInterface
      * @param \Magento\Sales\Model\Service\InvoiceService $invoiceService
      * @param Order $orderInterface
@@ -109,13 +105,9 @@ class Ipn
      */
 
     public function __construct(
-        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
         \Madit\Sips2\Model\Config $config,
         \Madit\Sips2\Model\Api\Response $responseApi,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Psr\Log\LoggerInterface $logger,
-        \Madit\Sips2\Model\Adminhtml\System\Config\Source\Payment\Cctype $ccType,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\ResponseInterface $responseInterface,
         \Magento\Sales\Model\Service\InvoiceService $invoiceService,
         \Magento\Sales\Model\Order $orderInterface,
@@ -124,11 +116,7 @@ class Ipn
         \Magento\Sales\Model\Order\Email\Sender\InvoiceSender $invoiceSender,
         OrderRepository $orderRepository
     ) {
-        $this->moduleDirReader = $moduleDirReader;
         $this->_api = $responseApi;
-        $this->scopeConfig = $scopeConfig;
-        $this->ccType = $ccType;
-        $this->storeManager = $storeManager;
         $this->logger = $logger;
         $this->responseInterface = $responseInterface;
         $this->_config = $config;
