@@ -1,7 +1,15 @@
 # Magento-Worldline-Sips2 payment module
+Worldline payment module for magento (LCL, Sogé, BNP Parisbas...)
 
-Module de paiement atos worldline pour magento de MAD IT --
- 
+Some are experiencing some ssl certs issues with their test env. Those need to update their cert authority on the server or directly through php : 
+ 1. Download the [latest certs here](https://curl.se/docs/caextract.html)  (e.g 2025-09-09)
+ 2. update your php.ini as follows : 
+       * curl.cainfo = /pathtocertif/cacert-2025-09-09.pem
+       * openssl.cafile= /pathtocertif/cacert-2025-09-09.pem
+
+
+Module de paiement atos worldline pour magento de MAD IT 
+
 ***[Full pro version here](https://www.madit.fr/r/sips2-atos-buy).***
 
 ***[Pwa-studio version with GraphQl support](https://www.madit.fr/fr_FR/shop/product/worldline-pwa-studio-extension-16).***
